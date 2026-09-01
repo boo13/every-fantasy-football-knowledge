@@ -1,0 +1,16 @@
+{
+  "id": "H-YYYY-NNN",
+  "created_at": "ISO timestamp before the outcome",
+  "evidence_cutoff": "ISO timestamp",
+  "type": "hypothesis",
+  "claim": "Specific public-football expectation, not an individualized transaction",
+  "scope": {"season": null, "weeks": [], "scoring_assumptions": null},
+  "public_sources": [],
+  "measurement": "Defined outcome and source used to evaluate it",
+  "baseline": "Explicit comparison, if any",
+  "confidence": "Qualitative unless probabilities have a defensible basis",
+  "invalidation_conditions": [],
+  "review_on": "YYYY-MM-DD",
+  "status": "open",
+  "reviews": []
+}

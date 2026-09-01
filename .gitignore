@@ -1,0 +1,10 @@
+.env*
+*.pem
+*.key
+__pycache__/
+.venv/
+.uv-cache/
+.DS_Store
+work/
+private/
+*.tmp
