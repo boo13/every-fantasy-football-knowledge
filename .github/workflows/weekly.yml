@@ -18,7 +18,7 @@ jobs:
         with:
           python-version: '3.12'
       - run: python3 -m unittest discover -s tests -v
-      - run: python3 scripts/collect.py
+      - run: python3 scripts/collect.py --skip-news
       - run: python3 scripts/validate.py --fresh
       - name: Publish only public collection outputs
         run: |
@@ -34,6 +34,3 @@ jobs:
           git push origin HEAD:main
       - name: Surface degraded source health
         run: python3 scripts/validate.py --fresh --healthy
-      - name: Diagnose public news response on failure
-        if: failure()
-        run: python3 scripts/diagnose_news.py

@@ -146,6 +146,17 @@ class CollectorTests(unittest.TestCase):
         self.assertIn("Latest available stats week: 2", report)
         self.assertEqual(value["prior_stats"][0]["season"], "2025")
 
+    def test_hosted_news_coverage_is_explicit_not_a_silent_success(self):
+        def without_news(url):
+            self.assertNotEqual(url, collect.NEWS)
+            return fixture(url)
+        value = collect.collect(NOW, without_news, include_news=False)
+        validate.validate_snapshot(value)
+        self.assertEqual(value["sources"]["espn_news"]["status"], "manual_research")
+        self.assertEqual(value["health"], "ok")
+        self.assertEqual(value["news"], [])
+        self.assertIn("No news feed was fetched", collect.render(value, None))
+
     def test_allowlist_rejects_private_and_arbitrary_endpoints(self):
         for url in (collect.BASE + "league/123", collect.BASE + "user/123", "https://example.com", collect.NEWS + "?token=x"):
             self.assertFalse(collect.allowed(url))

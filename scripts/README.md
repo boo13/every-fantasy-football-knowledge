@@ -8,4 +8,4 @@ Runtime source failures are never converted to fabricated data. Missing current 
 
 Tests are offline with synthetic public-football fixtures. Run `python3 -m unittest discover -s tests -v`. After changing ingestion or rendering, also run one deliberate live collection and inspect its outputs.
 
-`diagnose_news.py` fetches only the public ESPN feed and reports content type/encoding, byte count, hash and XML parse location. On malformed XML it prints at most a short public-response excerpt. The weekly job invokes it after a failure for runner-specific diagnosis; it never reads credentials or private data.
+`diagnose_news.py` fetches only the public ESPN feed and reports content type/encoding, byte count, hash and XML parse location. On malformed XML it prints at most a short public-response excerpt. Use it manually for environment-specific diagnosis; it never reads credentials or private data. Hosted collection uses `collect.py --skip-news` and records `manual_research` coverage, because that runner returned an empty feed. Local collection includes the feed by default.

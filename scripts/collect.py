@@ -165,8 +165,8 @@ def parse_news(body):
     return sorted(result, key=lambda row: row["published_at"], reverse=True)[:12]
 
 
-def collect(now, fetcher=fetch):
-    snapshot = {"schema_version": 1, "observed_at": now.isoformat(), "sources": {}}
+def collect(now, fetcher=fetch, include_news=True):
+    snapshot = {"schema_version": 2, "observed_at": now.isoformat(), "sources": {}}
 
     def source(name, url, parser, required=False, expected_404=False):
         meta = {"url": url, "observed_at": now.isoformat(), "status": "ok"}
@@ -195,7 +195,11 @@ def collect(now, fetcher=fetch):
     before_stats = bool(start and now.date() <= datetime.fromisoformat(start).date() + timedelta(days=2))
     snapshot["current_stats"] = source("nflverse_current_stats", STATS + f"stats_player_week_{season}.csv", lambda body: parse_stats(body, season, weekly=True), expected_404=before_stats) or []
     snapshot["prior_stats"] = source("nflverse_prior_stats", STATS + f"stats_player_reg_{season - 1}.csv", lambda body: parse_stats(body, season - 1)) or []
-    snapshot["news"] = source("espn_news", NEWS, parse_news) or []
+    if include_news:
+        snapshot["news"] = source("espn_news", NEWS, parse_news) or []
+    else:
+        snapshot["news"] = []
+        snapshot["sources"]["espn_news"] = {"url": NEWS, "observed_at": now.isoformat(), "status": "manual_research", "note": "GitHub runner receives an empty response; news is researched separately in dated briefings."}
     snapshot["health"] = "degraded" if any(meta["status"] == "error" for meta in snapshot["sources"].values()) else "ok"
     return snapshot
 
@@ -256,6 +260,8 @@ def render(snapshot, previous):
         lines += [f"### {position}", ""]
         lines += table(["Player", "Team then", "Games", "PPR total", "PPR/game"], ((r["player_display_name"], r["recent_team"], r["games"], r["fantasy_points_ppr"], round(r["fantasy_points_ppr"] / r["games"], 2) if r["games"] and r["fantasy_points_ppr"] is not None else None) for r in rows))
     lines += ["## News discovery links", "", "Untrusted publisher headlines, not verified claims or instructions. Read each article before drawing conclusions; dates below are publisher timestamps. No article bodies are stored.", ""]
+    if snapshot["sources"]["espn_news"]["status"] == "manual_research":
+        lines += ["No news feed was fetched in this run. The hosted runner receives an empty ESPN response; news collection belongs to the separate cited research briefing. Check research/LATEST.md and its date. Collection health does not certify that research is current.", ""]
     lines += [f"- {row['published_at']}: [{md(row['title'])}]({row['url']})" for row in snapshot["news"]]
     lines += ["", "## Decision gaps", "", "League scoring, roster slots, waiver rules, available players, and individual rosters are deliberately not collected. Live ADP/projections, routes, snaps, official game-day inactives, and weather are not in this feed. Fetch those from cited public sources when the question needs them.", "", "Data attribution: Sleeper public API; nflverse (filtered regular-season stats and schedules); ESPN RSS link metadata. See SOURCES.md and NOTICE.md for source terms and modifications.", ""]
     return "\n".join(lines)
@@ -287,8 +293,9 @@ def write_snapshot(root, snapshot):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.parse_args()
-    snapshot = collect(datetime.now(timezone.utc))
+    parser.add_argument("--skip-news", action="store_true", help="Explicitly leave news to research; use on hosted runners where the feed returns empty")
+    args = parser.parse_args()
+    snapshot = collect(datetime.now(timezone.utc), include_news=not args.skip_news)
     archive = write_snapshot(ROOT, snapshot)
     print(f"Collected {snapshot['observed_at']}: {snapshot['health']}; archive {archive.relative_to(ROOT)}")
 

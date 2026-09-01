@@ -26,6 +26,8 @@ A public, shared research library for fantasy-football players and their LLMs. S
 
 The collector works without Codex. Synthesis uses the configured LLM's normal usage allowance. If synthesis misses a week, collected evidence still updates; check the research date separately. GitHub schedules can be delayed and public-repository schedules may be disabled after inactivity: [GitHub schedule documentation](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows).
 
+**News coverage:** ESPN's RSS feed returns an empty response from the GitHub runner, although it worked in the local bootstrap. Hosted collection explicitly marks news `manual_research`; the separate research follow-up gathers and verifies public news. A green data run does not mean that week's news has been researched. Local collection can include RSS; use `--skip-news` if that source is unavailable in your environment.
+
 ## How knowledge compounds
 
 ```mermaid

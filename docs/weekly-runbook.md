@@ -4,6 +4,8 @@
 
 GitHub Actions runs the deterministic collector every Tuesday at 13:17 UTC. A separately configured Codex follow-up runs Tuesday at 11 a.m. America/New_York for research and knowledge maintenance. GitHub collection needs no LLM. The local research follow-up needs an online Codex environment, public web access, the installed Compound Engineering plugin, and authenticated GitHub access. These schedules are not guarantees of exact execution time.
 
+Hosted collection uses `--skip-news`: ESPN returned an empty response from the hosted runner during verification. Its source status is `manual_research`, so this follow-up must research news directly from public sources. Do not equate healthy numerical data collection with completed news research. Optional local RSS collection is still available.
+
 Read [AGENTS.md](../AGENTS.md) and [PRIVACY.md](../PRIVACY.md) first. Only public football material and files in this repository may inform published output. No company connectors, other repositories, user memories, or session-history mining. This privacy boundary also applies inside plugin workflows.
 
 ## 1. Establish a safe starting state

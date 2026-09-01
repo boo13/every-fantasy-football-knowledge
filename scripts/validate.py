@@ -33,7 +33,7 @@ def check_keys(value):
 
 def validate_snapshot(value):
     from collect import PLAYER_FIELDS, allowed
-    if value.get("schema_version") != 1 or not value.get("players"):
+    if value.get("schema_version") not in {1, 2} or not value.get("players"):
         raise ValueError("Invalid or empty snapshot")
     if value.get("health") not in {"ok", "degraded"}:
         raise ValueError("Invalid collection health")
@@ -45,8 +45,10 @@ def validate_snapshot(value):
     for name, meta in value["sources"].items():
         if not allowed(meta["url"]) or meta["observed_at"] != value["observed_at"]:
             raise ValueError("Invalid provenance")
-        if meta["status"] not in {"ok", "error", "not_yet_available"}:
+        if meta["status"] not in {"ok", "error", "not_yet_available", "manual_research"}:
             raise ValueError("Invalid source status")
+        if meta["status"] == "manual_research" and (name != "espn_news" or value["schema_version"] < 2 or value.get("news")):
+            raise ValueError("Invalid manual-research coverage")
         if meta["status"] == "not_yet_available" and name != "nflverse_current_stats":
             raise ValueError("Unexpected missing source")
         if meta["status"] == "ok" and not re.fullmatch(r"[a-f0-9]{64}", meta.get("sha256", "")):
