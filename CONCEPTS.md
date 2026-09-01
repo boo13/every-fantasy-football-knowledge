@@ -21,6 +21,9 @@ A dated synthesis separating public-source facts, interpretation, and unresolved
 ### Hypothesis
 A conditional, testable expectation recorded before its outcome is known, with evidence and a planned review.
 
+### Research question
+A bounded uncertainty paired with the evidence needed to resolve it, without a pre-outcome expectation that can be scored as a forecast.
+
 ### Durable lesson
 A reusable conclusion whose evidence, applicability, and limitations are explicit and whose validity is revisited as new observations arrive.
 

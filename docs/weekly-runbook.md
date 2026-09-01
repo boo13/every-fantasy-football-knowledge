@@ -13,6 +13,7 @@ Read [AGENTS.md](../AGENTS.md) and [PRIVACY.md](../PRIVACY.md) first. Only publi
 - Work only in a clean checkout of the expected repository. Verify the remote and branch. If there are unrelated changes, stop and report; do not reset, stash, or overwrite them.
 - Fetch and fast-forward `main`. Never force-push or amend published history.
 - Read `data/latest.json`, `context/CURRENT.md`, `research/LATEST.md`, open questions, and relevant existing learnings. Check dates and source health before reasoning.
+- Run `python3 scripts/knowledge.py` to list due reviews before adding new research. Follow [knowledge-quality rules](knowledge-quality.md) for evidence and corrections.
 - Check the latest weekly Actions run. If it failed or the snapshot is more than eight days old, investigate the public source failure. Do not claim current context. A manual rerun is appropriate after recovery, but do not repeatedly fetch the full Sleeper catalog within one day.
 
 ## 2. Review the previous cycle first
@@ -20,6 +21,8 @@ Read [AGENTS.md](../AGENTS.md) and [PRIVACY.md](../PRIVACY.md) first. Only publi
 For every due open question or hypothesis, identify what new public evidence answers it. Record the outcome, source dates, uncertainty, and any confounders in the new research note. If evidence is still missing, keep it open and explain why. Never invent a completed outcome or treat absence as confirmation.
 
 `research/questions.json` tracks open/answered/retired questions with stable IDs. Add append-only review records inside each question; preserve the original question and evidence cutoff. A prediction needs the extra fields in `templates/hypothesis.json` before its outcome, not afterward. Ordinary research questions are not predictions and must not be counted as forecast successes.
+
+Store actual predictions in `research/hypotheses.json` (initially empty, not a fabricated track record). Each review uses `reviewed_at`, `result`, `summary`, and `public_sources`, as shown in `templates/question-review.json`. The latest review result must match the record's status. Use a new ID when the original claim or question changes.
 
 ## 3. Research material changes
 
@@ -67,11 +70,14 @@ Run:
 python3 -m unittest discover -s tests -v
 python3 scripts/validate.py
 python3 scripts/validate.py --fresh --healthy
+python3 scripts/knowledge.py --against HEAD
 git diff --check
 git diff
 ```
 
 Review prose for personal/company information as well as credentials; automated checks are not enough. Use a GitHub noreply/bot identity. Stage only intended public research, evidence, and documentation changes. Commit one logical update, push normally, and confirm the remote commit plus CI result. Do not change source URLs, application code, permissions, or schedules during a routine research run without review.
+
+CI checks old snapshots and generated reports byte-for-byte, original ledger claims and prior review entries for preservation, and existing dated research notes for append-only corrections. The link check validates local file targets, not external availability or heading anchors. Do not bypass a failure by relabeling an old prediction as a new fact.
 
 If publication conflicts, credentials fail, or a safety check fails, preserve the work locally and report the specific blocker. Do not bypass checks. If a source is degraded, the collector can publish an explicitly degraded report, then makes the Actions run fail so the problem is visible. Research may discuss the limitation but must not present absent data as fresh evidence.
 

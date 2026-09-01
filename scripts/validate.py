@@ -61,7 +61,15 @@ def validate_snapshot(value):
 
 
 def validate_repo(root=ROOT):
-    files = [p for p in root.rglob("*") if p.is_file() and not {".git", ".uv-cache", "__pycache__", ".venv"}.intersection(p.relative_to(root).parts)]
+    from knowledge import report, validate_links
+    files = []
+    for path in root.rglob("*"):
+        if {".git", ".uv-cache", "__pycache__", ".venv"}.intersection(path.relative_to(root).parts):
+            continue
+        if path.is_symlink():
+            raise ValueError("Symlinked publication files are not allowed")
+        if path.is_file():
+            files.append(path)
     for path in files:
         if path.name.startswith(".env") or path.suffix in {".pem", ".key"}:
             raise ValueError("Forbidden sensitive file type")
@@ -87,7 +95,9 @@ def validate_repo(root=ROOT):
             raise ValueError("Latest snapshot has no matching immutable archive")
     elif "--fresh" in sys.argv:
         raise ValueError("No current snapshot")
-    print(f"Validated {len(files)} text files and snapshot provenance; automated checks do not replace human privacy review.")
+    report(root, datetime.now(timezone.utc).date())
+    links = validate_links(root)
+    print(f"Validated {len(files)} text files, {links} local links, research ledgers and snapshot provenance; automated checks do not replace human privacy review.")
 
 
 if __name__ == "__main__":

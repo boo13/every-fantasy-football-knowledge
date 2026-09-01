@@ -11,3 +11,5 @@ Player map keys are Sleeper IDs. `gsis_id` may be null. Stats `player_id` values
 Collectors never overwrite an existing observation. A new observation may include provider stat corrections. Compare archives when investigating those changes; player-field deltas do not attempt to describe every statistical correction.
 
 Reuse and attribution: [NOTICE.md](../NOTICE.md). No participant or private-league records belong here.
+
+For small read-only player/team packets, use [the query CLI](../docs/querying-data.md) rather than sending the whole archive to an LLM. It labels unmatched IDs, missing data, separate seasons and source health; optional history preserves the identity mapping from each observation.

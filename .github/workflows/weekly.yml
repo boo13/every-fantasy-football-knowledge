@@ -20,6 +20,7 @@ jobs:
       - run: python3 -m unittest discover -s tests -v
       - run: python3 scripts/collect.py --skip-news
       - run: python3 scripts/validate.py --fresh
+      - run: python3 scripts/knowledge.py --against HEAD
       - name: Publish only public collection outputs
         run: |
           git config user.name 'github-actions[bot]'
@@ -31,6 +32,7 @@ jobs:
           git commit -m 'data: refresh weekly public football context'
           git pull --rebase origin main
           python3 scripts/validate.py --fresh
+          python3 scripts/knowledge.py --against HEAD~1
           git push origin HEAD:main
       - name: Surface degraded source health
         run: python3 scripts/validate.py --fresh --healthy

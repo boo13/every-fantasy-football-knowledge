@@ -22,4 +22,6 @@ The collector has fixed public endpoint URLs, never asks for a league ID, never 
 
 The validator detects selected token, email, local-path, private-workspace-link, and JSON-field patterns. It cannot identify every secret or infer whether ordinary prose is confidential. It is a safety check, not a privacy guarantee.
 
+The research audit also rejects broken local links, unsupported record closures, and rewriting of preserved evidence/review history. These checks establish structure and continuity, not that prose is factually correct or safe to publish. Public-source claims still need editorial review.
+
 If anything sensitive is discovered, stop further publishing and notify the repository owner privately. Do not open a public issue quoting it. Removing a file in a new commit does not remove it from Git history; credential rotation/history cleanup may need separate authorized action.

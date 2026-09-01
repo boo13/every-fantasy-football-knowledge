@@ -11,3 +11,13 @@ collect:
 check:
     just test
     just validate
+
+reviews:
+    python3 scripts/knowledge.py
+
+audit:
+    python3 scripts/knowledge.py --against HEAD
+
+[positional-arguments]
+query *args:
+    python3 scripts/query.py "$@"
