@@ -15,6 +15,9 @@ New to the sport? Read [football and fantasy in one sitting](../football-and-fan
 | Which statistics say something useful? | [Opportunity, advanced metrics, and uncertainty](opportunity-and-uncertainty.md) | Definitions, denominators, coverage, dates |
 | Who merits a waiver claim? | [Waivers, FAAB, and the bench](waivers-and-faab.md) | Availability, claim rules, opportunity cost |
 | Who should start, and when must the choice be made? | [Lineups, schedules, and availability](lineup-and-schedule-management.md) | Eligibility, lock times, current reports |
+| What does a practice, injury or reserve designation establish? | [Availability and injury reports](availability-and-injury-reports.md) | Official report stage and update time |
+| How do kickers and defensive units differ? | [Kickers and team defense](kickers-and-team-defense.md) | Scoring categories, current job and game context |
+| What if the format uses defensive players or other unusual rules? | [IDP and unusual formats](idp-and-unusual-formats.md) | Exact format and additional data coverage |
 | Does a proposed exchange improve a roster? | [Trade evaluation](trade-evaluation.md) | Complete before/after lineups and horizon |
 | What changes when players persist between seasons? | [Dynasty and keeper leagues](dynasty-and-keepers.md) | Retention cost, future picks, roster rules |
 

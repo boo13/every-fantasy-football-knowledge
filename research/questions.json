@@ -60,5 +60,25 @@
     "review_on": "2026-09-15",
     "status": "open",
     "reviews": []
+  },
+  {
+    "id": "Q-2026-004",
+    "type": "research_question",
+    "created_at": "2026-09-01T15:11:34Z",
+    "question": "Which role and availability uncertainties in the September 1 twelve-rookie watch are resolved by 2026 Week 1 evidence, and which remain unsupported?",
+    "evidence_needed": "Original game-week status and transaction reports plus complete Week 1 game usage for the selected rookies; distinguish unavailable players, unmatched IDs and missing statistical coverage from zero production. Compare with docs/season-2026/rookie-opportunity-watch.md without inventing routes or target-share denominators.",
+    "review_on": "2026-09-15",
+    "status": "open",
+    "reviews": []
+  },
+  {
+    "id": "Q-2026-005",
+    "type": "research_question",
+    "created_at": "2026-09-01T15:11:34Z",
+    "question": "By September 8, what has changed in the access, update dates, formats, samples and availability assumptions of the public draft sources audited on August 31?",
+    "evidence_needed": "Recheck the original public sources linked in docs/season-2026/public-adp-and-projections.md; identify changed and unchanged metadata, access failures and remaining scoring or roster assumptions. Preserve the prior audit and Q-2026-001 answer.",
+    "review_on": "2026-09-08",
+    "status": "open",
+    "reviews": []
   }
 ]

@@ -11,13 +11,14 @@ A public, shared research library for fantasy-football players and their LLMs. S
 | --- | --- |
 | Give an LLM useful context | [START_HERE.md](START_HERE.md) |
 | Understand football and fantasy | [Beginner guide](docs/football-and-fantasy.md) |
-| Go deeper on strategy | [Nine-part handbook](docs/handbook/README.md) and [library index](docs/README.md) |
+| Go deeper on strategy | [Twelve-part handbook](docs/handbook/README.md) and [library index](docs/README.md) |
 | Orient to the 2026 season | [Team and source references](docs/season-2026/) |
 | Know what is happening now | [Current collected evidence](context/CURRENT.md) and [latest research](research/LATEST.md) |
 | Make draft, waiver, trade, or lineup decisions | [Decision framework](docs/decision-framework.md) and [copyable prompts](prompts/README.md) |
 | Understand a term | [Football glossary](docs/glossary.md) |
 | Check source quality and gaps | [Source registry](SOURCES.md) |
 | Retrieve a small player/team evidence packet | [Offline query CLI](docs/querying-data.md) |
+| Interpret a statistic or check an LLM's answer | [Statistics reference](docs/statistics-reference.md) and [worked evaluation cases](prompts/evaluation-cases.md) |
 | Understand how this compounds | [Weekly runbook](docs/weekly-runbook.md), [learning index](docs/solutions/README.md), [open questions](research/questions.json) |
 
 **No rankings here are promises.** Historical results are labeled by season, player status can lag, and null does not mean healthy. Check timestamps and official availability before setting a lineup. League settings must come from the person asking the LLM, in their own private conversation.

@@ -8,3 +8,4 @@ Human/LLM synthesis, separate from generated collection reports. Each note names
 | --- | --- |
 | 2026-08-31 | [Initial pre-kickoff evidence and research priorities](2026-08-31.md) |
 | 2026-08-31 | [Expanded preseason briefing and public draft-source audit](2026/2026-08-31-preseason-draft-brief.md) |
+| 2026-09-01 | [Rookie evidence baseline and a broader decision library](2026-09-01.md) |

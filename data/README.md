@@ -13,3 +13,5 @@ Collectors never overwrite an existing observation. A new observation may includ
 Reuse and attribution: [NOTICE.md](../NOTICE.md). No participant or private-league records belong here.
 
 For small read-only player/team packets, use [the query CLI](../docs/querying-data.md) rather than sending the whole archive to an LLM. It labels unmatched IDs, missing data, separate seasons and source health; optional history preserves the identity mapping from each observation.
+
+The [statistics reference](../docs/statistics-reference.md) maps retained fields to units, valid arithmetic and missing scoring categories. A provider dictionary can document fields this repository does not retain.

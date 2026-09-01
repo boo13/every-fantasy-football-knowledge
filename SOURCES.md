@@ -19,6 +19,8 @@ Registry reviewed: 2026-08-31. Each collection records its own observed timestam
 
 The dated [2026 ADP/projection audit](docs/season-2026/public-adp-and-projections.md) records what was actually accessible from Fantasy Football Calculator, ESPN's projection guide, and FantasyPros, including stated formats, sample windows, forecast assumptions and access limitations. These are research inputs, not new automatic feeds. Original team reporting for selected current situations is linked claim-by-claim in [the preseason briefing](research/2026/2026-08-31-preseason-draft-brief.md).
 
+The [September 1 rookie opportunity watch](docs/season-2026/rookie-opportunity-watch.md) adds selective original-team evidence for 12 offensive rookies, with separate publication dates, unresolved questions and review triggers. It is not a league-wide status feed or an implied update of the August 31 draft-source audit.
+
 For advanced metrics, follow the original methodology linked in [the opportunity guide](docs/handbook/opportunity-and-uncertainty.md). In particular, the [nflverse availability schedule](https://nflreadr.nflverse.com/articles/nflverse_data_schedule.html) describes participation data from 2023 onward as post-season releases, not a live in-season feed. A field's existence upstream does not mean it is in this repository's normalized dataset.
 
 ## Evidence hierarchy

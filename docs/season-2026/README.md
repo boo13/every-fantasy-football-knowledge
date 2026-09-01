@@ -6,6 +6,7 @@ Season-specific material is dated evidence, not permanent truth. Recheck source 
 | --- | --- |
 | [32-team orientation](team-reference.md) | Divisions, provider team-code differences, official team sites, and selective verified context |
 | [Public ADP and projection source audit](public-adp-and-projections.md) | Accessible sources, stated formats/sample windows, methodology, assumptions, and access/coverage limits |
+| [Selective rookie opportunity watch](rookie-opportunity-watch.md) | Dated original-team evidence, conditional relevance, coverage gaps and next-review triggers |
 | [Preseason research briefing](../../research/2026/2026-08-31-preseason-draft-brief.md) | Original team-report evidence for selected current situations, separated from interpretation |
 | [Current collection](../../context/CURRENT.md) | Provider status, trends, schedule and historical/current-stat coverage |
 

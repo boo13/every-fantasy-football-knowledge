@@ -20,5 +20,7 @@ A pasted GitHub URL does not guarantee an LLM can read a whole repository. Use a
 | Waiver or lineup decision | Waiver/lineup chapters, a bounded player packet, current official reports |
 | What changed? | Exact observation history plus dated research; distinguish provider-field changes from confirmed news |
 | Is a strategy supported? | [Knowledge quality](docs/knowledge-quality.md), prior hypotheses and their complete review history |
+| What does this field or calculation mean? | [Statistics reference](docs/statistics-reference.md), the source dictionary and the exact sample |
+| Is the LLM respecting the evidence? | [Worked evaluation cases](prompts/evaluation-cases.md), with explicit expected behavior and failure examples |
 
 Before weekly research, run `python3 scripts/knowledge.py` for due reviews. An answered research question is not a successful forecast. Empty statistical coverage and an unmatched player ID are unknowns, not negative judgments about a player.

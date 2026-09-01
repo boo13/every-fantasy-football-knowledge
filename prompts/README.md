@@ -2,6 +2,8 @@
 
 For every prompt: read START_HERE.md first, cite sources/dates, label uncertainty, explain unfamiliar terms, and keep all user-specific inputs in private chat only.
 
+Use the [worked evaluation cases](evaluation-cases.md) to check whether an answer respects missing data, identity, scoring, uncertainty and privacy. These are manual teaching cases, not an executed LLM benchmark.
+
 ## Draft preparation
 
 > Ask for my league rules privately. Explain how the scoring and starting slots affect positional value. Use the repo's latest context as background, then find current, format-matched public ADP and projections. Build tiers and alternative draft approaches. Separate last season's production from next season's expectations. If you cannot fetch current rankings, do not manufacture them.
@@ -29,3 +31,19 @@ For every prompt: read START_HERE.md first, cite sources/dates, label uncertaint
 ## Review a past hypothesis
 
 > Run the due-review report, then compare the original claim and evidence cutoff with new public evidence. Measure the predefined outcome without moving the goalposts. Record confounders and counterevidence. Append a cited review using the quality guide; do not rewrite the original claim or count ordinary research answers as prediction wins.
+
+## Research a rookie
+
+> Read the current-season rookie watch as dated background, not a ranking. Verify current team, roster/game availability and what the original source actually says about the role. Separate selection or roster security from earned routes, carries and targets. Ask privately for the scoring and time horizon. Identify the next observable evidence that would change the assessment; absence of NFL statistics is not evidence of poor performance.
+
+## Interpret a statistic
+
+> Use the statistics reference to identify the exact field, season, weeks, player ID, denominator and scoring basis. Show the arithmetic from a complete compatible sample. Tell me which relevant categories are not collected. Never build team shares from a truncated packet, fill missing values with zero, or call a partial category subtotal a complete custom score.
+
+## Check a report before lineup lock
+
+> Read the availability guide and distinguish practice participation, game designation, reserve status, inactive confirmation and projected workload. Use current original NFL/team reports with explicit timestamps. Give conditional options and the next legal decision deadline under privately supplied platform rules. Do not diagnose an injury, invent clearance odds, assume AutoSubs, or claim to have changed a lineup.
+
+## Compact answer shape
+
+> Give me: (1) the decision and rules you are assuming; (2) the collection and research dates; (3) a short evidence table separating sourced facts from interpretation; (4) the conditional conclusion and alternative, if supported; (5) what is missing and what would change the answer; (6) the official report or deadline that needs the next check. If evidence is insufficient, say precisely what is missing. Do not create private records in the public repo.
