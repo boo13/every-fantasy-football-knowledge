@@ -17,3 +17,15 @@ For every prompt: read START_HERE.md first, cite sources/dates, label uncertaint
 ## Compounding review
 
 > Follow docs/weekly-runbook.md. Revisit the open questions and prior dated hypotheses before adding new ones. Record outcomes and counterevidence without rewriting history. Use Compound Engineering ce-compound for one genuinely established lesson at a time and ce-compound-refresh to audit existing lessons. Never present generic advice as a tested conclusion.
+
+## Compare formats
+
+> Read the scoring/formats handbook chapter. Using only my privately supplied rules and clearly labeled hypothetical examples, show which player profiles gain or lose relative value. Recalculate from the underlying stat categories rather than relabeling existing PPR totals. Explain replacement-level assumptions and what could change the comparison.
+
+## Audit a player narrative
+
+> Retrieve a bounded evidence packet with the offline query CLI. Identify the player unambiguously; do not join providers by name. Separate observed usage, scoring outcomes, provider availability flags, and outside reporting. Check dates and missing coverage. Give the strongest alternative explanation to the popular narrative before forming a conditional judgment.
+
+## Review a past hypothesis
+
+> Run the due-review report, then compare the original claim and evidence cutoff with new public evidence. Measure the predefined outcome without moving the goalposts. Record confounders and counterevidence. Append a cited review using the quality guide; do not rewrite the original claim or count ordinary research answers as prediction wins.

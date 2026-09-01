@@ -5,9 +5,25 @@
     "created_at": "2026-09-01T00:11:47.854195+00:00",
     "question": "Which accessible public ADP and projection sources identify their format, platform, sample and update date?",
     "evidence_needed": "Read original methodology and current update; distinguish projections from ADP.",
-    "review_on": "2026-09-01",
-    "status": "open",
-    "reviews": []
+    "review_on": "2026-09-08",
+    "status": "answered",
+    "reviews": [
+      {
+        "reviewed_at": "2026-09-01T01:03:50Z",
+        "result": "answered",
+        "summary": "Completed the dated source audit in docs/season-2026/public-adp-and-projections.md. Fantasy Football Calculator identifies 2026 12-team PPR and non-PPR mock-draft samples with August 24–31 windows. ESPN's Mike Clay guide states an August 31 update and 17-game baseline; complete scoring remains unverified. FantasyPros public HTML exposes a projection update and dated ADP providers, but several sample/roster assumptions remain incomplete and its Standard Scoring link leads to half-PPR defaults. Scripted FFC access returned HTTP 403; no automatic ADP integration is claimed. These findings answer source discovery, not every operational or scoring limitation.",
+        "public_sources": [
+          "https://fantasyfootballcalculator.com/adp/ppr",
+          "https://fantasyfootballcalculator.com/adp",
+          "https://help.fantasyfootballcalculator.com/article/34-average-draft-position-adp-data",
+          "https://help.fantasyfootballcalculator.com/article/42-adp-rest-api",
+          "https://g.espncdn.com/s/ffldraftkit/26/NFLDK2026_CS_ClayProjections2026.pdf",
+          "https://www.fantasypros.com/nfl/projections/qb.php?week=draft",
+          "https://www.fantasypros.com/nfl/adp/ppr-overall.php",
+          "https://www.fantasypros.com/scoring-settings/"
+        ]
+      }
+    ]
   },
   {
     "id": "Q-2026-002",
@@ -15,9 +31,25 @@
     "created_at": "2026-09-01T00:11:47.854195+00:00",
     "question": "Which current aggregate trend leaders have independently verified role or availability changes?",
     "evidence_needed": "Specific dated official team reports; do not infer a cause from aggregate counts.",
-    "review_on": "2026-09-01",
+    "review_on": "2026-09-08",
     "status": "open",
-    "reviews": []
+    "reviews": [
+      {
+        "reviewed_at": "2026-09-01T01:03:50Z",
+        "result": "open",
+        "summary": "Investigated seven team situations in research/2026/2026-08-31-preseason-draft-brief.md using original team sources. The reports establish selected Dallas, Green Bay, Detroit, Cincinnati, Carolina, New Orleans and Tampa Bay roster/availability facts. Detroit's backup-role premise remains conditional. These facts provide context for selected aggregate leaders, not proof of trend causation or future workloads. Other leaders and game-week availability remain unverified, so the question stays open.",
+        "public_sources": [
+          "https://www.dallascowboys.com/news/schottenheimer-explains-jaydon-blue-rb-decisions-for-cowboys-roster",
+          "https://www.packers.com/news/5-takeaways-from-packers-roster-decisions-2026",
+          "https://www.detroitlions.com/news/detroit-lions-preseason-week-3-observations-dobbs-saylors-meeks",
+          "https://www.bengals.com/news/bengals-initial-2026-53-man-roster-feature",
+          "https://www.panthers.com/team/transactions/",
+          "https://www.panthers.com/news/panthers-add-darren-waller-make-corresponding-roster-moves",
+          "https://www.neworleanssaints.com/news/new-orleans-saints-53-man-roster-cut-transactions-august-30-2026-nfl-season",
+          "https://www.buccaneers.com/news/bucs-go-heavy-in-trenches-on-first-53-man-roster-of-2026"
+        ]
+      }
+    ]
   },
   {
     "id": "Q-2026-003",

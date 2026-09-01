@@ -17,6 +17,10 @@ Registry reviewed: 2026-08-31. Each collection records its own observed timestam
 - [nflverse data availability](https://nflreadr.nflverse.com/): follow availability/update documentation and data dictionaries; do not assume a historical endpoint still publishes this season.
 - [Sleeper scoring options](https://support.sleeper.com/en/articles/3998131-what-scoring-options-are-available): examples of configurable scoring, never a substitute for the actual league settings.
 
+The dated [2026 ADP/projection audit](docs/season-2026/public-adp-and-projections.md) records what was actually accessible from Fantasy Football Calculator, ESPN's projection guide, and FantasyPros, including stated formats, sample windows, forecast assumptions and access limitations. These are research inputs, not new automatic feeds. Original team reporting for selected current situations is linked claim-by-claim in [the preseason briefing](research/2026/2026-08-31-preseason-draft-brief.md).
+
+For advanced metrics, follow the original methodology linked in [the opportunity guide](docs/handbook/opportunity-and-uncertainty.md). In particular, the [nflverse availability schedule](https://nflreadr.nflverse.com/articles/nflverse_data_schedule.html) describes participation data from 2023 onward as post-season releases, not a live in-season feed. A field's existence upstream does not mean it is in this repository's normalized dataset.
+
 ## Evidence hierarchy
 
 Use official reports for availability and transactions; provider datasets for recorded statistics; multiple independent, dated analyses for forecasts. Two articles repeating one report are one underlying source. Where sources conflict, preserve the conflict and say which fact needs confirmation.

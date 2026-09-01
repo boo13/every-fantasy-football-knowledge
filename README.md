@@ -11,10 +11,13 @@ A public, shared research library for fantasy-football players and their LLMs. S
 | --- | --- |
 | Give an LLM useful context | [START_HERE.md](START_HERE.md) |
 | Understand football and fantasy | [Beginner guide](docs/football-and-fantasy.md) |
+| Go deeper on strategy | [Nine-part handbook](docs/handbook/README.md) and [library index](docs/README.md) |
+| Orient to the 2026 season | [Team and source references](docs/season-2026/) |
 | Know what is happening now | [Current collected evidence](context/CURRENT.md) and [latest research](research/LATEST.md) |
 | Make draft, waiver, trade, or lineup decisions | [Decision framework](docs/decision-framework.md) and [copyable prompts](prompts/README.md) |
 | Understand a term | [Football glossary](docs/glossary.md) |
 | Check source quality and gaps | [Source registry](SOURCES.md) |
+| Retrieve a small player/team evidence packet | [Offline query CLI](docs/querying-data.md) |
 | Understand how this compounds | [Weekly runbook](docs/weekly-runbook.md), [learning index](docs/solutions/README.md), [open questions](research/questions.json) |
 
 **No rankings here are promises.** Historical results are labeled by season, player status can lag, and null does not mean healthy. Check timestamps and official availability before setting a lineup. League settings must come from the person asking the LLM, in their own private conversation.
@@ -42,6 +45,8 @@ flowchart LR
 
 Evidence snapshots are append-only. Briefings separate facts from inference. Questions stay open until evidence answers them. Durable lessons include applicability and limitations; superseded conclusions stay discoverable through dated corrections and Git history. A pile of repeated headlines is not a learning.
 
+[Research-quality checks](docs/knowledge-quality.md) require cited reviews before records close, preserve original claims and prior reviews, and reject changes to existing evidence snapshots. Forecasts have their own initially empty ledger; answering a research question never counts as a prediction win.
+
 ## Run locally
 
 Python 3.12+; standard library only. `just` is optional.
@@ -54,7 +59,7 @@ python3 scripts/collect.py
 python3 scripts/validate.py --fresh --healthy
 ```
 
-Equivalent recipes: `just test`, `just collect`, `just validate`, `just check`. The collector writes files, but never runs Git or publishes by itself. Do not fetch the full player catalog more than once per day; reuse the latest snapshot for research.
+Equivalent recipes: `just test`, `just collect`, `just validate`, `just check`. Use `just reviews` for due research and `just audit` to check pending edits against preserved history. The collector writes files, but never runs Git or publishes by itself. Do not fetch the full player catalog more than once per day; reuse the latest snapshot for research.
 
 To refresh remotely: Actions → **Weekly public football context** → **Run workflow**, or `gh workflow run weekly.yml`. To pause collection: disable that workflow. To pause synthesis: disable its separate Codex automation. Forks must explicitly enable scheduled Actions; the Codex automation does not follow a fork.
 
