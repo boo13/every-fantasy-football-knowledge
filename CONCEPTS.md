@@ -10,6 +10,8 @@ A dated capture of selected public football information as reported by its provi
 ### Source health
 The distinction between successful collection, explicitly expected absence, and collection failure for a public source.
 
+Collection-wide health summarizes source outcomes; it does not certify freshness, completeness, or correct interpretation of the evidence.
+
 ### Evidence cutoff
 The latest time at which information was allowed to inform a particular analysis, preserving the difference between a forecast and hindsight.
 

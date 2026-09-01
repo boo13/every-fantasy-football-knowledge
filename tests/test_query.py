@@ -109,6 +109,26 @@ class QueryTests(unittest.TestCase):
         self.assertEqual(result["current_stats"]["rows"], [])
         self.assertEqual(result["current_stats"]["excluded_other_season_rows"], 1)
 
+    def test_unknown_season_cannot_select_games_or_infer_byes(self):
+        value = fixture()
+        teams = sorted(query.TEAMS)
+        for season in (None, "", "unresolved"):
+            with self.subTest(season=season):
+                value["state"]["season"] = season
+                value["schedule"] = [{"game_id": f"{week}_{away}_{home}", "season": season, "week": str(week), "gameday": "2026-10-04", "gametime": "13:00", "away_team": away, "home_team": home} for week in range(1, 18) for away, home in zip(teams[::2], teams[1::2])]
+                result = query.schedule_query(value, "BUF")
+                self.assertEqual(result["status"], "unknown_season")
+                self.assertIsNone(result["season"])
+                self.assertEqual(result["rows"], [])
+                self.assertEqual(result["bye_evidence"]["status"], "unknown_incomplete_schedule")
+
+    def test_schedule_default_date_uses_observation_utc_date(self):
+        value = fixture()
+        value["observed_at"] = "2026-10-04T23:30:00-04:00"
+        result = query.schedule_query(value, "BUF")
+        self.assertEqual(result["from_date"], "2026-10-05")
+        self.assertEqual(result["rows"], [])
+
     def test_team_validation_alias_and_week_filter(self):
         self.assertEqual(query.team_code("lar"), "LA")
         with self.assertRaises(query.argparse.ArgumentTypeError):
@@ -190,6 +210,19 @@ class QueryTests(unittest.TestCase):
             self.assertEqual(result["rows"][0]["status"], "invalid_archive")
             self.assertNotIn("evidence", result["rows"][0])
 
+    def test_malformed_history_is_flagged_without_losing_current_evidence(self):
+        value = fixture()
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            older = copy.deepcopy(value)
+            older["observed_at"] = (NOW - timedelta(days=7)).isoformat()
+            older["current_stats"][0]["week"] = {"bad": "week"}
+            archive(root, older)
+            result = query.player_query(value, sleeper_id="1", history=1, history_dir=root)
+            self.assertEqual(result["current_stats"]["match_status"], "matched")
+            self.assertEqual(result["history"]["rows"][0]["status"], "invalid_archive")
+            self.assertNotIn("evidence", result["history"]["rows"][0])
+
     def test_freshness_distinguishes_collection_age_and_future_dates(self):
         value = fixture()
         self.assertEqual(query.observation(value, NOW)["freshness"]["status"], "within_8_day_window")
@@ -241,6 +274,28 @@ class QueryTests(unittest.TestCase):
         value["schedule"][0]["unexpected_detail"] = "not collected evidence"
         self.assertNotIn("unexpected_detail", json.dumps(query.player_query(value, sleeper_id="1")))
         self.assertNotIn("unexpected_detail", json.dumps(query.schedule_query(value, "BUF")))
+
+    def test_cli_rejects_malformed_projected_values_without_echoing_them(self):
+        cases = (("current_stats", 0, "fantasy_points", {"detail": "untrusted-value"}),
+                 ("current_stats", 0, "week", True),
+                 ("prior_stats", 0, "carries", float("inf")),
+                 ("schedule", 0, "home_score", ["untrusted-value"]),
+                 ("sources", "sleeper_players", "note", {"detail": "untrusted-value"}),
+                 ("state", None, "season_type", {"detail": "untrusted-value"}))
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "latest.json"
+            for dataset, row, field, malformed in cases:
+                with self.subTest(dataset=dataset, field=field):
+                    value = fixture()
+                    target = value[dataset] if row is None else value[dataset][row]
+                    target[field] = malformed
+                    path.write_text(json.dumps(value))
+                    output = io.StringIO()
+                    with contextlib.redirect_stdout(output):
+                        code = query.main(["--snapshot", str(path), "player", "--sleeper-id", "1"])
+                    self.assertEqual(code, 2)
+                    self.assertEqual(json.loads(output.getvalue())["status"], "invalid_snapshot_or_query")
+                    self.assertNotIn("untrusted-value", output.getvalue())
 
 
 if __name__ == "__main__":

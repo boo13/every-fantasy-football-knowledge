@@ -1,5 +1,6 @@
 import argparse
 import json
+import math
 import re
 import sys
 from datetime import date, datetime, timezone
@@ -9,6 +10,7 @@ ROOT = Path(__file__).resolve().parents[1]
 TEAMS = set("ARI ATL BAL BUF CAR CHI CIN CLE DAL DEN DET GB HOU IND JAX KC LA LAC LV MIA MIN NE NO NYG NYJ PHI PIT SEA SF TB TEN WAS".split())
 PLAYER_FIELDS = ("full_name", "position", "team", "status", "injury_status", "practice_participation", "gsis_id")
 STAT_FIELDS = ("player_id", "player_display_name", "position", "season", "recent_team", "games", "week", "attempts", "passing_yards", "passing_tds", "passing_interceptions", "carries", "rushing_yards", "rushing_tds", "targets", "receptions", "receiving_yards", "receiving_tds", "fantasy_points", "fantasy_points_ppr")
+STAT_NUMBERS = set(STAT_FIELDS) - {"player_id", "player_display_name", "position", "season", "recent_team"}
 GAME_FIELDS = ("game_id", "season", "week", "gameday", "gametime", "away_team", "home_team", "away_score", "home_score")
 SOURCE_FIELDS = ("url", "observed_at", "status", "sha256", "upstream_last_modified", "records", "error", "note")
 CAUTIONS = [
@@ -25,6 +27,16 @@ def timestamp(value):
     return result.astimezone(timezone.utc)
 
 
+def validate_projection(record, fields, numeric_fields=()):
+    for field in fields:
+        value = record.get(field)
+        if value is None:
+            continue
+        expected = (int, float) if field in numeric_fields else (str, int, float)
+        if type(value) not in expected or isinstance(value, float) and not math.isfinite(value):
+            raise ValueError("Invalid projected evidence value")
+
+
 def load_snapshot(path):
     try:
         value = json.loads(path.read_text(encoding="utf-8"))
@@ -39,6 +51,14 @@ def load_snapshot(path):
             raise ValueError
         if any(player.get(field) is not None and not isinstance(player[field], str) for player in value.get("players", {}).values() for field in PLAYER_FIELDS):
             raise ValueError
+        validate_projection(value, ("health",))
+        validate_projection(value.get("state", {}), ("season", "season_type", "display_week"))
+        for record in value.get("sources", {}).values():
+            validate_projection(record, SOURCE_FIELDS, ("records",))
+        for record in [*value.get("current_stats", []), *value.get("prior_stats", [])]:
+            validate_projection(record, STAT_FIELDS, STAT_NUMBERS)
+        for record in value.get("schedule", []):
+            validate_projection(record, GAME_FIELDS)
         return value
     except (OSError, UnicodeError, ValueError, KeyError, TypeError):
         raise ValueError("Could not read a supported public snapshot with a timezone-aware observation") from None
@@ -47,6 +67,11 @@ def load_snapshot(path):
 def source(snapshot, name):
     meta = snapshot.get("sources", {}).get(name, {})
     return {"name": name, **{key: meta[key] for key in SOURCE_FIELDS if key in meta}, "status": meta.get("status", "missing")}
+
+
+def season_label(snapshot):
+    value = str(snapshot.get("state", {}).get("season", ""))
+    return value if re.fullmatch(r"20\d{2}", value) else None
 
 
 def observation(snapshot, now=None):
@@ -151,8 +176,8 @@ def identity_mapping(snapshot, pid):
 def stat_evidence(snapshot, dataset, mapping, limit):
     current = dataset == "current_stats"
     provenance = source(snapshot, "nflverse_" + dataset)
-    raw_season = str(snapshot.get("state", {}).get("season", ""))
-    season = str(int(raw_season) - (0 if current else 1)) if re.fullmatch(r"20\d{2}", raw_season) else None
+    raw_season = season_label(snapshot)
+    season = str(int(raw_season) - (0 if current else 1)) if raw_season else None
     result = {
         "id_namespace": "nflverse_gsis",
         "sample": "regular_season_weekly" if current else "regular_season_totals",
@@ -223,7 +248,7 @@ def recent_history(snapshot, pid, directory, count, limit, now=None):
                 player = snapshot["players"][pid]
                 changes = [{"field": field, "before": old_player.get(field), "after": player.get(field)} for field in PLAYER_FIELDS if old_player.get(field) != player.get(field)]
             rows.append({"archive": path.name, "observation": observation(older, now), "evidence": evidence, "provider_field_changes_to_selected_observation": changes})
-        except ValueError:
+        except (ValueError, TypeError, KeyError):
             rows.append({"archive": path.name, "status": "invalid_archive", "note": "Archive unreadable or timestamp mismatch; no evidence used"})
     return {"requested": count, "status": "ok" if rows else "no_earlier_observations", "available_earlier_archives": len(candidates), "ignored_noncanonical_filenames": ignored, "returned": len(rows), "truncated": len(candidates) > count, "rows": rows}
 
@@ -248,8 +273,8 @@ def player_query(snapshot, sleeper_id=None, name=None, limit=5, history=0, histo
 def bye_evidence(snapshot, team):
     result = {"status": "unknown_incomplete_schedule", "weeks": None, "basis": "Requires a successful source, 272 unique same-season games, all 32 teams with 17 games each, and no repeated team/week slots in weeks 1-18"}
     rows = snapshot.get("schedule", [])
-    season = str(snapshot.get("state", {}).get("season", ""))
-    if source(snapshot, "nflverse_schedule")["status"] != "ok" or len(rows) != 272:
+    season = season_label(snapshot)
+    if season is None or source(snapshot, "nflverse_schedule")["status"] != "ok" or len(rows) != 272:
         return result
     if len({row.get("game_id") for row in rows}) != 272 or any(not row.get("game_id") for row in rows):
         return result
@@ -272,15 +297,15 @@ def schedule_query(snapshot, team, limit=5, week=None, from_date=None):
     team = team_code(team)
     provenance = source(snapshot, "nflverse_schedule")
     available = "schedule" in snapshot and provenance["status"] == "ok"
-    start = None if week is not None else from_date or snapshot["observed_at"][:10]
-    season = str(snapshot.get("state", {}).get("season", ""))
+    start = None if week is not None else from_date or timestamp(snapshot["observed_at"]).date().isoformat()
+    season = season_label(snapshot)
     rows = []
-    if available:
+    if available and season is not None:
         rows = [row for row in snapshot["schedule"] if str(row.get("season")) == season and any(team_matches(row.get(field), team) for field in ("away_team", "home_team"))]
         rows = [row for row in rows if str(row.get("week")) == str(week)] if week is not None else [row for row in rows if row.get("gameday", "") >= start]
         rows.sort(key=lambda row: (row.get("gameday", ""), row.get("gametime", ""), row.get("game_id", "")))
         rows = [{field: row.get(field) for field in GAME_FIELDS} for row in rows]
-    return {"status": "unavailable" if not available else "ok" if rows else "no_matches", "team_filter": team, "season": season or None, "week_filter": week, "from_date": start, "time_zone": "America/New_York", "source": provenance, "bye_evidence": bye_evidence(snapshot, team), "note": "Raw provider team codes are preserved. A no-match result is not itself bye evidence; any full-season bye inference is separately labeled and schedules can change.", **selection(rows, limit)}
+    return {"status": "unavailable" if not available else "unknown_season" if season is None else "ok" if rows else "no_matches", "team_filter": team, "season": season, "week_filter": week, "from_date": start, "time_zone": "America/New_York", "source": provenance, "bye_evidence": bye_evidence(snapshot, team), "note": "Raw provider team codes are preserved. A no-match result is not itself bye evidence; any full-season bye inference is separately labeled and schedules can change.", **selection(rows, limit)}
 
 
 def main(argv=None):

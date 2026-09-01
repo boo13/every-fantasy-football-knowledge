@@ -6,6 +6,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 PRIVATE_KEYS = {"owner_id", "user_id", "league_id", "roster_id", "username", "email", "phone", "birth_date", "metadata", "injury_notes", "address"}
+SOURCE_DATASETS = {"sleeper_state": "state", "sleeper_players": "players", "nflverse_schedule": "schedule", "sleeper_add": "trending_add", "sleeper_drop": "trending_drop", "nflverse_current_stats": "current_stats", "nflverse_prior_stats": "prior_stats", "espn_news": "news"}
 PATTERNS = {
     "credential": re.compile(r"(?:gh[pousr]_)[A-Za-z0-9]{20,}|github_pat_[A-Za-z0-9_]{20,}|sk-[A-Za-z0-9_-]{24,}|-----BEGIN (?:RSA |OPENSSH )?PRIVATE KEY-----"),
     "personal filesystem path": re.compile(r"/(?:Users|home)/[A-Za-z0-9_.-]+/"),
@@ -40,7 +41,7 @@ def validate_snapshot(value):
     observed = datetime.fromisoformat(value["observed_at"])
     if observed.tzinfo is None:
         raise ValueError("Observation must include a timezone")
-    if set(value["sources"]) != {"sleeper_state", "sleeper_players", "nflverse_schedule", "sleeper_add", "sleeper_drop", "nflverse_current_stats", "nflverse_prior_stats", "espn_news"}:
+    if set(value["sources"]) != set(SOURCE_DATASETS):
         raise ValueError("Missing or unexpected source")
     for name, meta in value["sources"].items():
         if not allowed(meta["url"]) or meta["observed_at"] != value["observed_at"]:
@@ -53,6 +54,17 @@ def validate_snapshot(value):
             raise ValueError("Unexpected missing source")
         if meta["status"] == "ok" and not re.fullmatch(r"[a-f0-9]{64}", meta.get("sha256", "")):
             raise ValueError("Successful sources need a content hash")
+        if name in {"sleeper_state", "sleeper_players"} and meta["status"] != "ok":
+            raise ValueError("Required source was not collected successfully")
+        dataset = SOURCE_DATASETS[name]
+        expected = dict if dataset in {"state", "players"} else list
+        if not isinstance(value.get(dataset), expected):
+            raise ValueError("Missing or malformed source dataset")
+        if meta["status"] != "ok" and value[dataset]:
+            raise ValueError("Unavailable source must not carry dataset rows")
+    expected_health = "degraded" if any(meta["status"] == "error" for meta in value["sources"].values()) else "ok"
+    if value["health"] != expected_health:
+        raise ValueError("Collection health disagrees with source health")
     for player in value["players"].values():
         if set(player) != set(PLAYER_FIELDS):
             raise ValueError("Unexpected player field")

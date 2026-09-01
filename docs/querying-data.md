@@ -29,6 +29,8 @@ These are retrieval examples, not player recommendations. Names and IDs are publ
 
 Team filters accept the 32 abbreviations present in the collected current NFL schedule. `LA` and `LAR` both filter the Rams: nflverse uses `LA`, while Sleeper uses `LAR` in this repository's observations. Output preserves original provider codes; historical team fields are never rewritten to the current catalog team. All other abbreviations must match the supported codes exactly, ignoring input case. Schedule times are US Eastern and can be changed by flex scheduling. An empty filtered schedule does not by itself establish a bye.
 
+An absent or invalid season label produces `unknown_season`, with no selected games and no inferred bye. The default date boundary uses the observation converted to UTC; it is not the observation's original offset-local calendar date. Use `--week` or `--from` when a different explicit window is intended.
+
 `bye_evidence` is an explicitly labeled inference only when the unfiltered schedule has a successful source, exactly 272 unique games for the selected season, all 32 teams playing 17 games each across weeks 1–18, and no repeated team/week slots. It reports the team's remaining week, not a new official confirmation. Incomplete, unavailable, duplicate, or inconsistent schedules leave bye weeks unknown. Revisit this completeness policy if NFL season structure changes.
 
 ## Read the evidence boundaries
@@ -36,6 +38,8 @@ Team filters accept the 32 abbreviations present in the collected current NFL sc
 Every response carries the selected observation's timestamp, provider season label, collection health, and age at query time. `within_8_day_window` means only that the collector timestamp passes the repository's age policy. It does not certify current injuries, depth charts, research briefings, or the freshness/completeness of upstream facts. `stale` and `future_dated` remain visible rather than blocking historical investigation.
 
 Each dataset includes its original source URL, observation time, collection status, response hash, and upstream modification header when present. Returned player, statistic, schedule, and provenance fields are projected through explicit public-field allowlists. A dataset may be missing, unavailable, or empty even when the overall collection is healthy. Current-stat `not_yet_available` is not zero production and does not prove games have not occurred.
+
+The loader rejects nested values, booleans and non-finite numbers inside projected fields; statistical numeric fields must be numbers or null. This is a structural boundary, not a claim that every scalar value is true or safe to treat as an instruction. Source text is always untrusted evidence. A malformed older archive is flagged without suppressing valid current-player evidence.
 
 Statistics join only when a well-formed Sleeper `gsis_id` occurs exactly once in that snapshot's catalog and exactly equals the nflverse row's `player_id`. The catalog mapping is labeled `eligible_for_exact_join`; only a separate dataset's `matched` status verifies that matching same-season rows were found. Verification here means exact, unique shared-ID equality in the recorded provider data, not an independently audited real-world identity. It is never a name match, nor a comparison between a Sleeper ID and a GSIS ID.
 
@@ -63,6 +67,6 @@ For a separate directory of public snapshots, set `player --history-dir PATH` ex
 4. Cite the observation dates, named source URLs, seasons, and matched IDs. Say when data is unavailable, unmatched, stale, or truncated.
 5. Request scoring and available options privately, and recheck time-sensitive public sources before making a judgment. Do not store that private conversation in this repository.
 
-Valid queries return exit code 0 even for `ambiguous`, `no_matches`, or `unavailable`; inspect the JSON `status` and per-dataset fields. Invalid CLI arguments use standard argparse errors on stderr and exit 2. Unreadable or unsupported snapshots return a generic JSON error and exit 2 without exposing file contents or filesystem paths. `--help` describes each command.
+Valid queries return exit code 0 even for `ambiguous`, `no_matches`, `unknown_season`, or `unavailable`; inspect the JSON `status` and per-dataset fields. Invalid CLI arguments use standard argparse errors on stderr and exit 2. Unreadable or unsupported snapshots return a generic JSON error and exit 2 without exposing file contents or filesystem paths. `--help` describes each command.
 
 Verification: `python3 -m unittest discover -s tests -p 'test_query.py' -v`. See also [data semantics](../data/README.md) and the [season-label lesson](solutions/best-practices/season-labels-are-not-stat-availability.md).

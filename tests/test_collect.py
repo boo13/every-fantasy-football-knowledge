@@ -191,6 +191,32 @@ class CollectorTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             validate.validate_snapshot(value)
 
+    def test_validation_rejects_health_that_hides_source_failure(self):
+        value = collect.collect(NOW, fixture)
+        value["sources"]["espn_news"]["status"] = "error"
+        value["news"] = []
+        with self.assertRaises(ValueError):
+            validate.validate_snapshot(value)
+        value["health"] = "degraded"
+        validate.validate_snapshot(value)
+        value["sources"]["sleeper_players"]["status"] = "error"
+        with self.assertRaises(ValueError):
+            validate.validate_snapshot(value)
+
+    def test_validation_rejects_unavailable_sources_with_carried_data(self):
+        value = collect.collect(NOW, fixture)
+        value["current_stats"] = value["prior_stats"]
+        with self.assertRaises(ValueError):
+            validate.validate_snapshot(value)
+
+    def test_validation_rejects_missing_or_malformed_source_datasets(self):
+        for field, replacement in (("state", []), ("schedule", None), ("prior_stats", {})):
+            with self.subTest(field=field):
+                value = collect.collect(NOW, fixture)
+                value[field] = replacement
+                with self.assertRaises(ValueError):
+                    validate.validate_snapshot(value)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -6,5 +6,6 @@ Reusable, evidence-backed lessons maintained with Compound Engineering. Read rel
 | --- | --- | --- |
 | [Separate season labels from statistic availability](best-practices/season-labels-are-not-stat-availability.md) | Public football evidence | Initial live observation and collector regression tests |
 | [Preserve evidence and review history](architecture-patterns/preserve-evidence-and-review-history.md) | Research quality | Tested ledger, source-boundary and Git-baseline audit behavior |
+| [Validate health against source evidence](best-practices/validate-health-against-source-evidence.md) | Public football evidence | Regression tests for contradictory health and unavailable sources carrying rows |
 
 New lessons require applicability, source evidence, limitations and a review trigger. Existing claims must be checked when sources or behavior change; preserve dated corrections rather than erasing the history.

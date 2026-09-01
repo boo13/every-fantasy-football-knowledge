@@ -4,6 +4,8 @@
 
 `validate.py` checks selected privacy patterns, JSON privacy keys, source provenance, player-field projection, and the existence of an exact archived copy of the latest snapshot. `--fresh` requires a current snapshot within eight days; `--healthy` rejects degraded source health. Historical CI intentionally omits freshness checks.
 
+Snapshot validation also checks source-to-dataset shape, successful required sources, empty datasets for unavailable sources, and overall health consistent with source errors. A consistent degraded snapshot is valid historical evidence but fails `--healthy`; a contradictory healthy label is invalid even without that flag.
+
 `knowledge.py` validates research/question ledgers, reports due reviews, checks local Markdown targets and audits historical preservation against a specified Git baseline. Use `python3 scripts/knowledge.py --against HEAD` before publishing; CI uses the push/PR baseline. It performs no network requests and never scores question answers as prediction wins. See [the quality guide](../docs/knowledge-quality.md).
 
 `query.py` provides bounded offline JSON search, player evidence, historical comparisons and team schedules. It never joins providers by name, distinguishes current from prior-season statistics, and exposes incomplete/unmatched coverage. Use `python3 scripts/query.py --help` or `just query --help`; [the query guide](../docs/querying-data.md) has examples.
