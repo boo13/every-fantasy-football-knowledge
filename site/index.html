@@ -19,8 +19,11 @@
     <div class="pd-brand"><span class="pd-brand-prefix" aria-hidden="true">Every</span><h1 aria-label="Every Large Language League"><span class="pd-brand-name"><span>Large Language</span><span>League</span></span></h1></div>
     <div class="pd-edition">FANTASY FOOTBALL<strong>DRAFT CENTRAL</strong></div>
   </header>
+  <section class="pd-intro" aria-label="Original pixel-art football intro">
+    <canvas id="pd-intro-canvas" width="480" height="240" aria-hidden="true"></canvas>
+    <div class="pd-intro-bar"><p id="pd-intro-caption">Welcome to the stadium</p><label class="pd-motion"><input type="checkbox" id="pd-motion" checked>Animations</label></div>
+  </section>
   <section id="pd-league" aria-label="Private Sleeper league connection"></section>
-  <div class="pd-demo"><strong id="pd-data-status" role="status">LOADING PUBLIC DATA</strong><span id="pd-observed">Fetching the published snapshot…</span></div>
   <div class="pd-scoreboard" aria-label="Public catalog and local board status">
     <div><span class="pd-label">Public catalog</span><span class="pd-score" id="pd-catalog-count">—</span></div>
     <div><span class="pd-label" id="pd-picks-label">Marked picked</span><span class="pd-score"><span id="pd-drafted-count">00</span><small id="pd-picks-origin">on this browser</small></span></div>
@@ -34,7 +37,7 @@
     <div class="pd-scene-detail"><strong id="pd-mood-title">Welcome to the field</strong><span id="pd-mood-subtitle">Select a player below to get started.</span></div>
     <div class="pd-confetti" aria-hidden="true"></div>
   </section>
-  <div class="pd-toolbar"><p id="pd-local-status">Your picks stay in this browser. No live league connection.</p><label class="pd-motion"><input type="checkbox" id="pd-motion" checked>Animations</label><button class="pd-secondary" id="pd-undo" disabled>Undo last pick</button></div>
+  <div class="pd-toolbar"><p>Meet the players. Hover to get their attention.</p><button class="pd-secondary" id="pd-undo" disabled>Undo last pick</button></div>
   <div class="pd-data">
     <section class="pd-selected-panel" aria-label="Selected player evidence">
       <div class="pd-selection-main"><div class="pd-panel-head"><span class="pd-label">Player dossier</span><span class="pd-tag" id="pd-picked-status">UNMARKED</span></div><div class="pd-selected-title"><h2 id="pd-player-title">Loading players…</h2></div><p class="pd-player-meta" id="pd-player-meta"></p>
@@ -60,6 +63,11 @@
     </section>
   </div>
   <section class="pd-evidence" aria-labelledby="pd-evidence-title"><div><span class="pd-label">Know what you're looking at</span><h2 id="pd-evidence-title">PUBLIC EVIDENCE. SHARED STARTING LINE.</h2><p>Player catalog and provider flags: Sleeper. Statistics and schedule: nflverse. Stats are joined only by verified, unique GSIS identifiers. Bye weeks are inferred only from a complete season schedule. Names and team assignments reflect the collection date, not a live feed.</p><p><strong>No automated ADP or projections yet.</strong> The published evidence contains no league rules, private rosters, or manager information. An optional Sleeper connection loads league data into this visit only. Historical PPR is not an assumption about your league's scoring.</p></div><div><h3>COLLECTION HEALTH</h3><ul id="pd-sources"></ul><a href="https://github.com/boo13/every-fantasy-football-knowledge/blob/main/docs/season-2026/public-adp-and-projections.md">Read the ADP / projection coverage audit →</a></div></section>
+  <footer class="pd-status-footer" aria-label="Data and connection status">
+    <div class="pd-demo"><strong id="pd-data-status" role="status">LOADING PUBLIC DATA</strong><span id="pd-observed">Fetching the published snapshot…</span></div>
+    <p id="pd-local-status">Your picks stay in this browser. No live league connection.</p>
+    <section id="pd-session" aria-label="Sleeper session controls"></section>
+  </footer>
   <footer class="pd-foot"><span>Original illustrative sprites and kits. Reactions are playful, not player sentiments or predictions.</span><a href="https://github.com/boo13/every-fantasy-football-knowledge">Knowledge repository ↗</a><a href="https://github.com/boo13/every-fantasy-football-knowledge/blob/main/NOTICE.md">Sources, attribution &amp; reuse</a></footer>
   <div class="pd-sr" id="pd-announcement" aria-live="polite" aria-atomic="true"></div>
   <noscript><p>JavaScript is needed for this draft board. All source data and football guidance are also available in the <a href="https://github.com/boo13/every-fantasy-football-knowledge">knowledge repository</a>.</p></noscript>

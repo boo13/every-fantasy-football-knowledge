@@ -37,21 +37,30 @@ async (page) => {
   });
   const root = page.locator('#pixel-draft-room');
   const league = page.locator('#pd-league');
+  const session = page.locator('#pd-session');
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.locator('#pd-motion').check();
   const refresh = async () => {
-    await league.getByRole('button', { name: 'Refresh', exact: true }).click();
-    await league.getByRole('button', { name: 'Refresh', exact: true }).waitFor({ state: 'visible' });
+    await session.getByRole('button', { name: 'Refresh', exact: true }).click();
+    await session.getByRole('button', { name: 'Refresh', exact: true }).waitFor({ state: 'visible' });
     await page.waitForFunction(() => !document.querySelector('.ll-session-controls button').disabled);
   };
   await page.locator('#pd-draft').click();
   const saved = await page.evaluate(() => JSON.stringify({ ...localStorage }));
-  await league.locator('input').fill(`https://sleeper.com/leagues/${leagueId}/predraft`);
-  await league.getByRole('button', { name: 'CONNECT LEAGUE →' }).click();
+  const connectInput = league.locator('input');
+  delayCore = true;
+  await connectInput.fill(`https://sleeper.com/leagues/${leagueId}/predraft`);
+  await connectInput.focus();
+  await connectInput.press('Enter');
   await league.locator('.ll-content').waitFor({ state: 'visible' });
+  check('keyboard connection hands focus to the active league tab', await league.getByRole('tab', { name: 'League table' }).evaluate(node => document.activeElement === node));
+  delayCore = false;
   check('pre-draft league renders twelve anonymous teams', await league.locator('.ll-standings tbody tr').count() === 12);
   check('pre-draft has no invented leader', (await league.locator('.ll-standings tbody tr td:first-child').allTextContents()).every(value => value === '—'));
   check('live session hides manual mutation controls', await page.locator('#pd-draft').isHidden() && await page.locator('#pd-undo').isHidden());
   check('connect clears entered ID', await league.locator('input').inputValue() === '');
-  check('private provider fields are not rendered', !(await league.textContent()).includes('excluded-'));
+  check('private provider fields are not rendered', !(await root.textContent()).includes('excluded-'));
+  check('connection controls are in the footer, not the game menu', await session.getByRole('button', { name: 'Disconnect', exact: true }).count() === 1 && await league.locator('.ll-session-controls').count() === 0);
   check('connection neither stores ID nor overwrites manual picks', await page.evaluate(() => JSON.stringify({ ...localStorage })) === saved && await page.evaluate(() => sessionStorage.length) === 0);
   check('only approved read endpoints requested', requests.length === 5 && requests.every(path => !/users|user\/|chat|avatar|transactions/.test(path)));
   await league.getByRole('tab', { name: 'Rosters' }).click();
@@ -86,7 +95,7 @@ async (page) => {
   check('commissioner zero overrides nonzero reported points', (await league.locator('.ll-match .ll-led').allTextContents()).every(value => value === '0.00') && (await league.locator('.ll-match-note').innerText()).includes('override'));
   await league.getByLabel('Matchup week').focus();
   delayCore = true;
-  await league.getByRole('button', { name: 'Refresh', exact: true }).evaluate(node => node.click());
+  await session.getByRole('button', { name: 'Refresh', exact: true }).evaluate(node => node.click());
   check('background refresh preserves active week control', await league.getByLabel('Matchup week').evaluate(node => !node.disabled && document.activeElement === node));
   await page.waitForFunction(() => !document.querySelector('.ll-session-controls button').disabled);
   delayCore = false;
@@ -105,11 +114,22 @@ async (page) => {
       check(`${label} page fits ${width}px`, await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth));
     }
   }
-  await league.getByRole('button', { name: 'Disconnect', exact: true }).click();
+  await session.getByRole('button', { name: 'Disconnect', exact: true }).click();
   check('disconnect restores the manual board', await page.locator('#pd-drafted-count').innerText() === '01' && await page.locator('#pd-draft').isVisible());
+  check('disconnect returns focus to the connection input', await connectInput.evaluate(node => document.activeElement === node));
   check('disconnect clears hidden league DOM', await league.locator('.ll-content tbody tr').count() === 0 && await league.locator('.ll-match').count() === 0 && await league.locator('.ll-scoring > div').count() === 0);
+  check('disconnect clears fetched session details', !(await session.textContent()).includes('Fetched'));
   check('live picks never entered storage', await page.evaluate(() => JSON.stringify({ ...localStorage })) === saved);
   check('no connection state in page URL', !page.url().includes(leagueId));
+  failCore = false;
+  delayCore = true;
+  await connectInput.fill(`https://sleeper.com/leagues/${leagueId}/predraft`);
+  await connectInput.press('Enter');
+  await session.getByRole('button', { name: 'Cancel', exact: true }).focus();
+  await league.locator('.ll-content').waitFor({ state: 'visible' });
+  check('delayed connection preserves deliberate other-control focus', await session.getByRole('button', { name: 'Disconnect', exact: true }).evaluate(node => document.activeElement === node));
+  delayCore = false;
+  await session.getByRole('button', { name: 'Disconnect', exact: true }).click();
   await page.reload(); await page.locator('#pixel-draft-room[data-ready=true]').waitFor();
   check('reload does not reconnect', await league.locator('.ll-connect').isVisible() && await league.locator('input').inputValue() === '');
   check('no uncaught application errors', errors.length === 0);

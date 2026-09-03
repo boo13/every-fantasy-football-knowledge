@@ -1,0 +1,71 @@
+async (page) => {
+  const checks = [], errors = [];
+  const check = (name, okay) => checks.push({ name, okay: Boolean(okay) });
+  page.on('pageerror', error => errors.push(error.message));
+  await page.setViewportSize({ width: 1280, height: 1400 });
+  await page.locator('#pixel-draft-room[data-ready=true]').waitFor();
+  if (await page.locator('.ll-content').isVisible() || Number(await page.locator('#pd-drafted-count').innerText()) !== 0) throw new Error('Use a fresh disposable browser without a league connection or saved picks.');
+  if (!await page.locator('#pd-intro-canvas').count()) throw new Error('Missing arcade intro above league controls.');
+  const intro = page.locator('#pd-intro-canvas');
+  check('intro leads the league screens', await page.evaluate(() => Boolean(document.querySelector('.pd-intro').compareDocumentPosition(document.querySelector('#pd-league')) & Node.DOCUMENT_POSITION_FOLLOWING)));
+  check('sync details live in the footer', await page.locator('#pd-session .ll-signal').count() === 1 && await page.locator('.pd-status-footer #pd-observed').count() === 1);
+  check('administrative header is gone', await page.locator('.ll-console-head:visible').count() === 0);
+  check('one animation control', await page.locator('#pd-motion').count() === 1);
+  await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.locator('#pd-motion').check();
+  await intro.scrollIntoViewIfNeeded();
+  await page.waitForFunction(() => document.querySelector('#pd-intro-canvas').dataset.playing === 'true', null, { timeout: 5000 });
+  const first = await intro.getAttribute('data-frame');
+  await page.waitForTimeout(500);
+  check('intro advances visibly', await intro.getAttribute('data-frame') !== first);
+  await page.locator('.pd-stadium').evaluate(field => field.scrollIntoView({ block: 'start' }));
+  await page.waitForFunction(() => document.querySelector('#pd-intro-canvas').dataset.playing === 'false' && document.querySelector('.pd-player-layer').dataset.motion === 'running', null, { timeout: 5000 });
+  const field = page.locator('.pd-player-layer');
+  await page.waitForFunction(() => document.querySelector('.pd-player-layer').width === Math.floor(document.querySelector('.pd-stadium').clientWidth / 2), null, { timeout: 5000 });
+  const idleBefore = await field.getAttribute('data-motion-frame');
+  await page.waitForTimeout(800);
+  check('offscreen intro pauses while field idles', await intro.getAttribute('data-playing') === 'false' && await field.getAttribute('data-motion-frame') !== idleBefore);
+  const selectedBefore = await page.locator('#pd-player-title').innerText();
+  const picksBefore = await page.locator('#pd-drafted-count').innerText();
+  const target = await field.evaluate(canvas => {
+    const actors = JSON.parse(canvas.dataset.scene), rect = canvas.getBoundingClientRect();
+    const actor = actors.find(actor => actor.pose === 'hips') || actors[0];
+    const x = Math.round(actor.x + actor.width / 2), y = Math.round(actor.y + actor.height * .45);
+    if (x < 0 || x >= canvas.width || y < 0 || y >= canvas.height) throw new Error('Hover target is outside the player canvas.');
+    return { id: actor.id, x: rect.left + x * rect.width / canvas.width, y: rect.top + y * rect.height / canvas.height };
+  });
+  await page.mouse.move(target.x, target.y);
+  await page.waitForTimeout(250);
+  check('hover targets the actual field player', await field.getAttribute('data-hovered') === target.id);
+  check('hover does not select or draft', await page.locator('#pd-player-title').innerText() === selectedBefore && await page.locator('#pd-drafted-count').innerText() === picksBefore);
+  await page.mouse.move(1, 1);
+  await page.locator(`#pd-board tr[data-player="${target.id}"] button`).evaluate(button => button.focus({ preventScroll: true }));
+  check('keyboard player focus has the same response', await field.getAttribute('data-hovered') === target.id);
+  const otherId = await page.locator('#pd-board tr[data-player]').evaluateAll((rows, id) => rows.map(row => row.dataset.player).find(player => player !== id), target.id);
+  await page.locator(`#pd-board tr[data-player="${otherId}"]`).evaluate(row => {
+    row.dispatchEvent(new PointerEvent('pointerenter', { bubbles: true }));
+    row.dispatchEvent(new PointerEvent('pointerleave', { bubbles: true }));
+  });
+  check('focused player survives another row hover', await field.getAttribute('data-hovered') === target.id);
+  await page.locator(`#pd-board tr[data-player="${target.id}"] button`).evaluate(button => button.blur());
+  check('blur clears the hover response', await field.getAttribute('data-hovered') === '');
+  await intro.scrollIntoViewIfNeeded();
+  await page.locator('#pd-motion').uncheck();
+  const paused = await intro.getAttribute('data-frame');
+  await page.waitForTimeout(300);
+  check('animation switch freezes the intro', await intro.getAttribute('data-playing') === 'false' && await intro.getAttribute('data-frame') === paused);
+  await page.locator('#pd-motion').check();
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  const reduced = await intro.getAttribute('data-frame');
+  await page.waitForTimeout(300);
+  check('OS reduced motion freezes and disables animations', await page.locator('#pd-motion').isDisabled() && await intro.getAttribute('data-playing') === 'false' && await intro.getAttribute('data-frame') === reduced);
+  for (const width of [1280, 768, 620, 390, 320]) {
+    await page.setViewportSize({ width, height: 1000 });
+    await page.waitForTimeout(100);
+    check(`cinematic fits ${width}px`, await intro.evaluate(canvas => { const box = canvas.getBoundingClientRect(); return box.width > 0 && Math.abs(box.width / box.height - 2) < .02 && document.documentElement.scrollWidth <= innerWidth; }));
+  }
+  check('no application errors', errors.length === 0);
+  const result = { passed: checks.filter(check => check.okay).length, total: checks.length, failures: checks.filter(check => !check.okay), errors };
+  if (result.failures.length) throw new Error(JSON.stringify(result));
+  return result;
+}

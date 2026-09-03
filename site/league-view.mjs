@@ -28,18 +28,23 @@ function reconciler(parent, create, paint) {
   };
 }
 
-export function createLeagueView({ root, players, onConnect, onDisconnect, onRefresh, onWeekChange, onSelectPlayer }) {
+export function createLeagueView({ root, sessionRoot = root, players, onConnect, onDisconnect, onRefresh, onWeekChange, onSelectPlayer, onHoverPlayer }) {
   const prefix = `ll-session-${++instance}`, catalog = new Map(players.map(player => [String(player.id), player]));
   const abort = new AbortController(), playerIds = new WeakMap(), listen = (node, event, callback) => node.addEventListener(event, callback, { signal: abort.signal });
   let current = { status: 'disconnected', snapshot: null }, selectedRoster = null, activeTab = 0, connectedBefore = false;
+  let hoveredPlayer = null, focusedPlayer = null, hoverId = null, connectFromGate = false;
+  function syncHover() {
+    const id = playerIds.get(focusedPlayer || hoveredPlayer), next = catalog.has(id) ? id : null;
+    if (next !== hoverId) { hoverId = next; onHoverPlayer?.(next); }
+  }
+  function clearHover() { hoveredPlayer = null; focusedPlayer = null; syncHover(); }
   root.classList.add('ll-room'); root.setAttribute('aria-labelledby', `${prefix}-title`);
-  const top = el('div', 'll-console-head'), titleGroup = el('div'), title = el('h2', '', 'LEAGUE ROOM');
+  const title = el('h2', 'pd-sr', 'League room');
   title.id = `${prefix}-title`;
-  titleGroup.append(el('span', 'll-kicker', 'SLEEPER CONNECTION / READ ONLY'), title);
+  const session = el('div', 'll-session');
   const signal = el('p', 'll-signal', 'Not connected'); signal.setAttribute('role', 'status'); signal.setAttribute('aria-live', 'polite');
-  top.append(titleGroup, signal);
   const gate = el('div', 'll-gate'), welcome = el('div', 'll-welcome');
-  welcome.append(el('span', 'll-kicker', 'THE WHOLE SEASON. ONE ROOM.'), el('h3', '', 'YOUR LEAGUE.\nON THE BOARD.'), el('p', '', 'The table. The matchups. Every roster. Every pick. Connect your Sleeper league to bring the season into focus.'));
+  welcome.append(el('h3', '', 'CONNECT SLEEPER'), el('p', '', 'Bring your league table, matchups, rosters and draft picks onto the board.'));
   const form = el('form', 'll-connect'), label = el('label', '', 'Sleeper league URL or ID'), input = el('input');
   input.type = 'text'; input.id = `${prefix}-input`; input.autocomplete = 'off'; input.spellcheck = false; input.maxLength = 300;
   input.placeholder = 'Paste a Sleeper league link or ID'; input.required = true; label.htmlFor = input.id;
@@ -72,12 +77,17 @@ export function createLeagueView({ root, players, onConnect, onDisconnect, onRef
     tabs.append(tab); tabButtons.push(tab); panels.push(panel);
   });
   function selectTab(index) {
+    clearHover();
     activeTab = index;
     tabButtons.forEach((tab, position) => { tab.setAttribute('aria-selected', String(position === activeTab)); tab.tabIndex = position === activeTab ? 0 : -1; panels[position].hidden = position !== activeTab; });
   }
   function playerCell(cell, id) {
     if (!cell.playerButton) {
       const control = button('', 'll-player'), name = el('span'), meta = el('small'); control.append(name, meta);
+      listen(control, 'pointerenter', () => { hoveredPlayer = control; syncHover(); });
+      listen(control, 'pointerleave', () => { if (hoveredPlayer === control) hoveredPlayer = null; syncHover(); });
+      listen(control, 'focus', () => { focusedPlayer = control; syncHover(); });
+      listen(control, 'blur', () => { if (focusedPlayer === control) focusedPlayer = null; syncHover(); });
       cell.replaceChildren(control); cell.playerButton = control; cell.playerName = name; cell.playerMeta = meta;
     }
     cell.playerId = id == null ? '' : String(id);
@@ -138,13 +148,14 @@ export function createLeagueView({ root, players, onConnect, onDisconnect, onRef
   const patchScoring = reconciler(scoringGrid, () => { const node = el('div'), term = el('dt'), value = el('dd'); node.append(term, value); return { node, term, value }; }, (entry, [key, value]) => { text(entry.term, key); text(entry.value, number(value, 2)); });
   const warnings = el('ul', 'll-warnings');
   const patchWarnings = reconciler(warnings, () => ({ node: el('li') }), (entry, value) => text(entry.node, value));
-  content.append(ribbon, tabs, ...panels, rules, warnings);
-  root.append(top, gate, controls, error, content);
+  content.append(ribbon, tabs, warnings, ...panels, rules);
+  root.append(title, gate, error, content);
+  session.append(signal, controls); sessionRoot.append(session);
   listen(form, 'submit', event => { event.preventDefault(); if (input.value.trim()) onConnect(input.value.trim()); });
-  listen(refresh, 'click', () => onRefresh()); listen(disconnect, 'click', () => { input.value = ''; onDisconnect(); });
+  listen(refresh, 'click', () => onRefresh()); listen(disconnect, 'click', () => { input.value = ''; clearHover(); onDisconnect(); if (!current.snapshot) input.focus(); });
   listen(root, 'click', event => { const id = playerIds.get(event.target.closest('button.ll-player')); if (catalog.has(id)) onSelectPlayer?.(id); });
   listen(week, 'change', () => onWeekChange(Number(week.value)));
-  listen(rosterSelect, 'change', () => { selectedRoster = Number(rosterSelect.value); renderRoster(); });
+  listen(rosterSelect, 'change', () => { clearHover(); selectedRoster = Number(rosterSelect.value); renderRoster(); });
   function renderRoster() {
     const snapshot = current.snapshot, roster = snapshot?.rosters.find(value => value.id === selectedRoster), rows = [];
     const starters = roster?.starters, reserve = roster?.reserve, all = roster?.players;
@@ -193,6 +204,11 @@ export function createLeagueView({ root, players, onConnect, onDisconnect, onRef
     const previousStatus = current.status;
     current = state;
     const connected = !!state.snapshot, busy = state.status === 'connecting' || state.status === 'refreshing';
+    const activeElement = document.activeElement;
+    if (state.status === 'connecting' && previousStatus !== 'connecting') connectFromGate = gate.contains(activeElement);
+    const enterLeague = connected && !connectedBefore && (gate.contains(activeElement)
+      || connectFromGate && activeElement === document.body);
+    const returnToConnect = !connected && !busy && (content.contains(document.activeElement) || controls.contains(document.activeElement));
     gate.hidden = connected; content.hidden = !connected; controls.hidden = !connected && !busy && state.status !== 'error';
     input.disabled = busy; connect.disabled = busy; refresh.disabled = busy; refresh.hidden = !connected;
     text(connect, busy ? 'CONNECTING…' : 'CONNECT LEAGUE →'); text(disconnect, connected ? 'Disconnect' : 'Cancel');
@@ -208,14 +224,25 @@ export function createLeagueView({ root, players, onConnect, onDisconnect, onRef
       [tableNote, matchupNote, rosterNote, draftNote, draftState, progressLabel, scoringSummary, slotsSummary].forEach(node => text(node, '')); progress.max = 1; progress.value = 0; week.value = '1'; rosterSelect.value = ''; rules.open = false;
     }
     connectedBefore = connected;
-    if (!connected) { text(fetched, busy ? 'Establishing a read-only connection…' : 'No league data loaded. Retry or disconnect.'); text(activity, 'No league information is saved.'); return; }
+    if (!connected && !busy) connectFromGate = false;
+    if (!connected) {
+      clearHover();
+      text(fetched, busy ? 'Establishing a read-only connection…' : 'No league data loaded. Retry or disconnect.'); text(activity, 'No league information is saved.');
+      if (returnToConnect) input.focus();
+      return;
+    }
     const date = new Date(state.snapshot.fetchedAt);
     text(fetched, Number.isFinite(date.getTime()) ? `Fetched ${date.toLocaleString('en-US', { dateStyle: 'medium', timeStyle: 'medium' })}` : 'Fetch time unavailable');
     text(activity, state.status === 'refreshing' ? 'Refreshing… showing the last fetched data.' : state.paused ? 'Automatic refresh paused while this tab is hidden.' : state.status === 'error' ? 'Showing the last fetched data. Refresh to retry.' : 'Session only · source updates may lag.');
     week.disabled = false;
     if (!busy && Number.isInteger(state.snapshot.week) && state.snapshot.week >= 1 && state.snapshot.week <= 18) week.value = String(state.snapshot.week);
     renderSnapshot(state.snapshot);
+    if (hoveredPlayer && !root.contains(hoveredPlayer)) hoveredPlayer = null;
+    if (focusedPlayer && document.activeElement !== focusedPlayer) focusedPlayer = null;
+    syncHover();
+    if (enterLeague) tabButtons[activeTab].focus();
+    connectFromGate = false;
   }
   selectTab(0); update(current);
-  return { update, destroy() { update({ status: 'disconnected', snapshot: null }); abort.abort(); root.replaceChildren(); root.classList.remove('ll-room'); root.removeAttribute('aria-labelledby'); } };
+  return { update, destroy() { clearHover(); update({ status: 'disconnected', snapshot: null }); abort.abort(); session.remove(); root.replaceChildren(); root.classList.remove('ll-room'); root.removeAttribute('aria-labelledby'); } };
 }

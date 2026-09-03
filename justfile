@@ -28,4 +28,5 @@ site:
 
 browser-checks session:
     playwright-cli -s={{session}} run-code --filename tests/browser_geometry.cjs --raw
+    playwright-cli -s={{session}} run-code --filename tests/browser_arcade.cjs --raw
     playwright-cli -s={{session}} run-code --filename tests/browser_league.cjs --raw

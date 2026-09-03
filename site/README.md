@@ -1,10 +1,10 @@
 # Every — Large Language League
 
-The public draft-room page uses the repository's recorded evidence. An optional read-only Sleeper connection adds league screens without storing league data in the repository. No fantasy login, analytics, or server is involved. Original pixel-art animations respond to selections and new draft picks; there are no reaction-demo controls.
+The public draft-room page uses the repository's recorded evidence. An optional read-only Sleeper connection adds league screens without storing league data in the repository. No fantasy login, analytics, or server is involved. An original pixel-art opening sequence and player reactions give the room a football-game presentation; there are no reaction-demo controls.
 
 ## Connect Sleeper
 
-Paste your Sleeper league link or numeric ID into **Connect Sleeper**. The connection lasts for this visit only. It is not placed in the page URL or either browser-storage API; reload or disconnect to clear it. Nothing is sent to GitHub or a backend. The public default has no configured league. See [PRIVACY.md](../PRIVACY.md) for the full boundary and why a publicly accessible API is not an access-control system.
+Paste your Sleeper league link or numeric ID into **Connect Sleeper**. The connection lasts for this visit only. It is not placed in the page URL or either browser-storage API; reload or disconnect to clear it. Refresh, disconnect, connection status, and collection timestamps live in the footer. Source failures still appear next to the league evidence. Nothing is sent to GitHub or a backend. The public default has no configured league. See [PRIVACY.md](../PRIVACY.md) for the full boundary and why a publicly accessible API is not an access-control system.
 
 - **League table:** actual W/L/T and points for/against with generic Team N aliases. Display order uses winning percentage (ties count half) then points for; it is not official playoff seeding or a reproduction of all Sleeper tiebreakers. Before games, no leader is invented.
 - **Matchups:** choose weeks 1–18. Scores come from the selected league, including commissioner overrides. Missing data stays unavailable, never a fabricated zero or final result.
@@ -21,7 +21,7 @@ From the repository root, run `just site` (or `python3 scripts/build_site.py`). 
 
 For the optional rendered-layout regression, open the built or deployed site with Playwright CLI, then run `playwright-cli -s=YOUR_SESSION run-code --filename tests/browser_geometry.cjs --raw` from the repository root. It checks all eight field positions at five viewport widths, including nameplate/HUD collisions; it only selects players and does not mark any picks.
 
-For the full browser suite, use `just browser-checks YOUR_SESSION` in a **fresh disposable browser** already showing the built or deployed page, with no connection or saved manual picks. The league regression intercepts API requests using explicitly fictional fixtures, checks live-pick animation, failures, privacy, and five screen widths, and leaves one synthetic local pick in that disposable profile. Never run it in a participant's active browser session. Build output versions asset URLs so a deployment does not mix cached old JavaScript with new league screens.
+For the full browser suite, use `just browser-checks YOUR_SESSION` in a **fresh disposable browser** already showing the built or deployed page, with no connection or saved manual picks. It checks field geometry, the opening animation and motion controls, then league behavior. The league regression intercepts API requests using explicitly fictional fixtures, checks live-pick animation, failures, privacy, and five screen widths, and leaves one synthetic local pick in that disposable profile. Never run it in a participant's active browser session. Build output versions asset URLs so a deployment does not mix cached old JavaScript with new league screens.
 
 The builder accepts `--snapshot PATH --output PATH`. Public catalog data is generated once per build, not fetched from Sleeper by every visitor. There is no new collection schedule. The existing weekly collection remains the source of public evidence updates; visit-only league polling is separate.
 
@@ -42,7 +42,11 @@ When disconnected, mark picked, return to board, and undo affect only the browse
 
 `assets/sprites.json` contains 32 original, agent-assisted, hand-authored 32 × 48 palette-token frames: eight resting poses and four frames for each of three moods from two viewpoints. These original sprite drawings are provided under the repository's MIT license. They are not extracted from Madden or licensed NFL art. Uniforms and avatars are illustrative, not player portraits; no jersey numbers or demographic attributes are inferred from public player names. The field uses perspective-scaled raster rendering with smoothing disabled.
 
-Selection triggers a short confident gesture. A recorded pick triggers a celebration and a brief passed-over gesture from another sprite. Motion is finite, can be disabled, and respects the operating system's reduced-motion setting. Static poses retain the same information. Reactions are decorative and do not represent real player emotions or predictions.
+The opening is an original 24-second, low-resolution canvas sequence: aerial stadium, cheering stands, sideline bench, referee whistle gesture, first-person snap, and a block wipe. It is silent and does not depict a real game or league. No downloaded game footage, external video host, or media tracker is used.
+
+Players have staggered idle gestures. Hover a field player or a matching player row to get a short response; keyboard focus on player buttons has the same effect. Hover does not select, draft, or change the dossier. Selection triggers a short confident gesture. A recorded pick triggers a celebration and a brief passed-over gesture from another sprite, taking priority over decorative idle movement.
+
+The **Animations** checkbox below the opening stops both the intro and player movement. The operating system's reduced-motion setting takes precedence. Continuous animation pauses offscreen and in hidden tabs; static poses retain the same information. Reactions are decorative and do not represent real player emotions or predictions.
 
 ## Publishing
 
