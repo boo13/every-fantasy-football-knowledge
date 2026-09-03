@@ -6,6 +6,8 @@ The public draft-room page uses the repository's recorded evidence. No fantasy l
 
 From the repository root, run `just site` (or `python3 scripts/build_site.py`). This copies the static assets and generates `_site/data/players.json` from `data/latest.json`. `_site/` is generated and ignored by Git. Use Python 3.12+; Node 22 is needed only for the client-state tests. Run `just check` for Python, JavaScript state, privacy, and evidence checks. Serve `_site/` using a static host; opening the HTML directly as a local file will not support module/data requests.
 
+For the optional rendered-layout regression, open the built or deployed site with Playwright CLI, then run `playwright-cli -s=YOUR_SESSION run-code --filename tests/browser_geometry.cjs --raw` from the repository root. It checks all eight field positions at five viewport widths, including nameplate/HUD collisions; it only selects players and does not mark any picks.
+
 The builder accepts `--snapshot PATH --output PATH`. Data is generated once per build, not fetched from Sleeper by every visitor. There is no new collection schedule. The existing weekly collection remains the source of updates.
 
 ## What the numbers mean

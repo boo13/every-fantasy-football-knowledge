@@ -89,9 +89,22 @@ export function createScene(root, spriteArt, state) {
         const right=x*2+width*2+14,left=x*2-bw-14;
         const bx=right+bw<stage.clientWidth-12?right:Math.max(12,left);
         const by=Math.min(stage.clientHeight-140,Math.max(48,y*2-18));
-        bubble.style.left=bx+'px';bubble.style.top=by+'px';
+        bubble.style.left=bx+'px';bubble.style.top=by+'px';bubble.style.visibility='visible';
         bubble.dataset.side=bx< x*2?'left':'right';
-        q('#pd-nameplate').style.left=Math.min(0,stage.clientWidth-12-x*2-q('#pd-nameplate').offsetWidth)+'px';
+        const plate=q('#pd-nameplate');
+        plate.style.bottom='-21px';
+        plate.style.left=Math.min(0,stage.clientWidth-12-x*2-plate.offsetWidth)+'px';
+        const labelBox=plate.getBoundingClientRect(),hud=q('.pd-scene-detail').getBoundingClientRect();
+        if(labelBox.right>hud.left&&labelBox.left<hud.right&&labelBox.bottom>hud.top&&labelBox.top<hud.bottom){
+          const left=hud.left-stage.getBoundingClientRect().left-x*2-plate.offsetWidth-8;
+          if(x*2+left>=12)plate.style.left=left+'px';
+          else {
+            const top=Math.max(48,Math.min(y*2-plate.offsetHeight-6,hud.top-stage.getBoundingClientRect().top-plate.offsetHeight-8));
+            plate.style.bottom=(y*2+height*2-top-plate.offsetHeight)+'px';
+          }
+        }
+        const finalLabel=plate.getBoundingClientRect(),speech=bubble.getBoundingClientRect();
+        if(finalLabel.right>speech.left&&finalLabel.left<speech.right&&finalLabel.bottom>speech.top&&finalLabel.top<speech.bottom)bubble.style.visibility='hidden';
       }
     });
     canvas.dataset.scene=JSON.stringify(scene);canvas.dataset.frame=String(frame);
