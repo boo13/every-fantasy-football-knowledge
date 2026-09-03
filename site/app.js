@@ -2,6 +2,7 @@ import { createScene } from './scene.js';
 import { filterPlayers, restorePicks } from './board-state.mjs';
 import { createLeagueView } from './league-view.mjs';
 import { createLeagueController } from './league-controller.mjs';
+import { createIntro } from './intro.mjs';
 
 const root = document.getElementById('pixel-draft-room');
 const q = selector => root.querySelector(selector);
@@ -16,6 +17,8 @@ async function loadJSON(path) {
 }
 
 async function start() {
+  const introCaptions = { stadium: 'Welcome to the stadium', crowd: 'The crowd is ready', bench: 'On the sideline', referee: 'Ready for the snap', snap: 'Under center', wipe: 'Back to the stadium' };
+  const intro = createIntro(q('#pd-intro-canvas'), { onSceneChange: name => { q('#pd-intro-caption').textContent = introCaptions[name] || 'Game day'; } });
   const [data, art] = await Promise.all([loadJSON('./data/players.json'), loadJSON('./assets/sprites.json')]);
   if (data.schema_version !== 1 || !Array.isArray(data.players) || !data.players.length) throw new Error('Player catalog unavailable');
   const players = data.players, byId = new Map(players.map(p => [p.id, p]));
@@ -23,7 +26,7 @@ async function start() {
   let storage, picks = [], storageWorks = true;
   try { storage = window.localStorage; picks = restorePicks(storage.getItem(storageKey), allowed); }
   catch { storageWorks = false; }
-  let selected = null, page = 0, rows = [], actors = [], timer, interval, currentMood = 'confident';
+  let selected = null, page = 0, rows = [], actors = [], timer, interval, currentMood = 'confident', boardHovered = null, boardFocused = null;
   let leagueState = { status: 'disconnected', snapshot: null };
   const inLeague = () => Boolean(leagueState.snapshot || leagueState.status === 'connecting');
   const boardPicks = () => inLeague()
@@ -135,7 +138,11 @@ async function start() {
     assignActors(); scene.draw();
   }
   function renderBoard() {
+    boardHovered = null;
+    boardFocused = null;
+    scene.hover(null);
     const displayedPicks = boardPicks();
+    const syncBoardHover = () => scene.hover(boardFocused || boardHovered);
     rows = filterPlayers(players, new Set(displayedPicks), filters());
     page = Math.max(0, Math.min(page, Math.ceil(rows.length / pageSize) - 1));
     const body = q('#pd-board'); body.replaceChildren();
@@ -150,6 +157,10 @@ async function start() {
       button.append(label, detail); cell.append(button); row.append(cell);
       for (const value of [p.history?.games, p.history?.ppr, p.bye]) { const td = document.createElement('td'); td.textContent = number(value); row.append(td); }
       row.addEventListener('click', () => { selected = p.id; renderSelection(); react(boardPicks().includes(p.id) ? 'picked' : 'confident', !boardPicks().includes(p.id)); announce(`${p.name} selected.`); });
+      row.addEventListener('pointerenter', () => { boardHovered = p.id; syncBoardHover(); });
+      row.addEventListener('pointerleave', () => { if (boardHovered === p.id) boardHovered = null; syncBoardHover(); });
+      button.addEventListener('focus', () => { boardFocused = p.id; syncBoardHover(); });
+      button.addEventListener('blur', () => { if (boardFocused === p.id) boardFocused = null; syncBoardHover(); });
       body.append(row);
     }
     if (!rows.length) { const row = document.createElement('tr'), cell = document.createElement('td'); cell.colSpan = 4; cell.className = 'pd-empty'; cell.textContent = 'No matches. Try another search, position, or board filter.'; row.append(cell); body.append(row); }
@@ -188,6 +199,8 @@ async function start() {
     motion.disabled = reduced.matches;
     if (reduced.matches) motion.checked = false;
     root.dataset.motion = motion.checked ? 'on' : 'off';
+    scene.setMotion(motion.checked);
+    intro.setMotion(motion.checked);
     if (!motion.checked) { stopAnimation(); scene.react(currentMood); }
   }
   motion.addEventListener('change', syncMotion); reduced.addEventListener('change', syncMotion);
@@ -210,9 +223,10 @@ async function start() {
   }
   localStatus(); syncMotion(); refilter();
   const tableGuide = q('#pd-table-guide').textContent;
-  const leagueView = createLeagueView({ root: q('#pd-league'), players,
+  const leagueView = createLeagueView({ root: q('#pd-league'), sessionRoot: q('#pd-session'), players,
     onConnect: input => league.connect(input), onDisconnect: () => league.disconnect(),
     onRefresh: () => league.refresh(), onWeekChange: week => league.changeWeek(Number(week)),
+    onHoverPlayer: id => scene.hover(id),
     onSelectPlayer: id => {
       if (!byId.has(id)) return;
       selected = id; renderSelection(); react(boardPicks().includes(id) ? 'picked' : 'confident', false);
@@ -241,7 +255,11 @@ async function start() {
     if (newCatalogPick) announce(`${byId.get(newPick.playerId).name} was picked in Sleeper.`);
   } });
   leagueView.update(leagueState);
-  window.addEventListener('pagehide', () => league.disconnect());
+  window.addEventListener('pagehide', event => {
+    league.disconnect(); stopAnimation(); scene.setMotion(false); intro.setMotion(false);
+    if (!event.persisted) { scene.destroy(); intro.destroy(); }
+  });
+  window.addEventListener('pageshow', event => { if (event.persisted) syncMotion(); });
   root.setAttribute('aria-busy', 'false'); root.dataset.ready = 'true';
 }
 
