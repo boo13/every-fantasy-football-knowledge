@@ -8,3 +8,5 @@ __pycache__/
 work/
 private/
 *.tmp
+_site/
+.playwright-cli/
