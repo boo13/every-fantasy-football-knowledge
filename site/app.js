@@ -1,5 +1,7 @@
 import { createScene } from './scene.js';
 import { filterPlayers, restorePicks } from './board-state.mjs';
+import { createLeagueView } from './league-view.mjs';
+import { createLeagueController } from './league-controller.mjs';
 
 const root = document.getElementById('pixel-draft-room');
 const q = selector => root.querySelector(selector);
@@ -22,6 +24,10 @@ async function start() {
   try { storage = window.localStorage; picks = restorePicks(storage.getItem(storageKey), allowed); }
   catch { storageWorks = false; }
   let selected = null, page = 0, rows = [], actors = [], timer, interval, currentMood = 'confident';
+  let leagueState = { status: 'disconnected', snapshot: null };
+  const inLeague = () => Boolean(leagueState.snapshot || leagueState.status === 'connecting');
+  const boardPicks = () => inLeague()
+    ? (leagueState.snapshot?.draft?.picks || []).map(pick => pick.playerId).filter(Boolean) : picks;
   const pageSize = 12;
   const motion = q('#pd-motion'), reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const scene = createScene(root, art, { actors: () => actors, selected: () => selected });
@@ -31,7 +37,8 @@ async function start() {
   };
 
   function localStatus() {
-    q('#pd-local-status').textContent = storageWorks
+    q('#pd-local-status').textContent = inLeague()
+      ? 'Read-only Sleeper session. Draft picks stay in memory; your manual board is untouched.' : storageWorks
       ? 'Picks saved on this browser only. No live league connection.'
       : 'Browser storage unavailable. Picks last only for this visit.';
   }
@@ -48,7 +55,8 @@ async function start() {
       sort: q('#pd-sort').value, rostered: q('#pd-rostered').checked };
   }
   function assignActors() {
-    const visible = rows.slice(page * pageSize, (page + 1) * pageSize).filter(p => !picks.includes(p.id) || p.id === selected).slice(0, 8);
+    const pickedIds = new Set(boardPicks());
+    const visible = rows.slice(page * pageSize, (page + 1) * pageSize).filter(p => !pickedIds.has(p.id) || p.id === selected).slice(0, 8);
     if (byId.has(selected) && !visible.some(p => p.id === selected)) visible.splice(2, visible.length >= 8 ? 1 : 0, byId.get(selected));
     const previous = new Map(actors.map(p => [p.id, p.slot]));
     const used = new Set(visible.map(p => previous.get(p.id)).filter(Boolean));
@@ -67,10 +75,17 @@ async function start() {
   function react(mood, play = true) {
     stopAnimation(); currentMood = mood;
     const details = moods[mood];
+    let subtitle = details.subtitle;
+    let mode = mood === 'picked' ? 'PICK RECORDED LOCALLY' : 'LOCAL BOARD';
+    if (inLeague()) {
+      if (mood === 'picked') subtitle = 'Selected in the fetched Sleeper draft.';
+      const stale = leagueState.snapshot?.draftStale || leagueState.status === 'error';
+      mode = stale ? 'SLEEPER · STALE' : 'SLEEPER · READ ONLY';
+    }
     q('#pd-bubble').textContent = details.bubble;
     q('#pd-mood-title').textContent = selected ? details.title : 'No matching players';
-    q('#pd-mood-subtitle').textContent = selected ? details.subtitle : 'Try another search or board filter.';
-    q('#pd-scene-mode').textContent = mood === 'picked' ? 'PICK RECORDED LOCALLY' : 'LOCAL BOARD';
+    q('#pd-mood-subtitle').textContent = selected ? subtitle : 'Try another search or board filter.';
+    q('#pd-scene-mode').textContent = mode;
     q('.pd-stadium').dataset.sceneMode = mood === 'picked' ? 'picked' : 'browsing';
     scene.react(mood, play && mood === 'picked' ? actors.find(p => p.id !== selected)?.id : null);
     if (play && selected && root.dataset.motion === 'on') {
@@ -81,12 +96,15 @@ async function start() {
     }
   }
   function renderSelection() {
-    const p = byId.get(selected), picked = picks.includes(selected);
-    q('#pd-draft').disabled = !p;
+    const p = byId.get(selected), picked = boardPicks().includes(selected);
+    q('#pd-draft').disabled = !p || inLeague();
+    q('#pd-draft').hidden = inLeague();
     q('#pd-draft').dataset.drafted = String(picked);
     q('#pd-draft').textContent = picked ? 'Return to board ↶' : 'Mark picked →';
     q('#pd-draft').setAttribute('aria-label', p ? `${picked ? 'Return to board:' : 'Mark picked:'} ${p.name}` : 'No player selected');
-    q('#pd-picked-status').textContent = p ? picked ? 'PICKED' : 'UNMARKED' : 'NO SELECTION';
+    let pickedStatus = inLeague() ? 'NO FETCHED PICK' : 'UNMARKED';
+    if (picked) pickedStatus = 'PICKED';
+    q('#pd-picked-status').textContent = p ? pickedStatus : 'NO SELECTION';
     q('#pd-player-title').textContent = p?.name || 'No player selected';
     q('#pd-player-meta').textContent = p ? `${p.position} · ${p.team || 'No assigned team'} · Sleeper ID ${p.id}` : 'Adjust the filters to find a player.';
     q('#pd-nameplate').textContent = p ? `${p.position} · ${p.name}` : '';
@@ -107,8 +125,9 @@ async function start() {
     q('#pd-history-note').textContent = p?.history
       ? `${data.history_season} regular season · historical team: ${p.history.team || 'not supplied'}. Exact GSIS match. PPR/game = total PPR ÷ games played.`
       : p ? `No verified ${data.history_season} total in this snapshot (${p.history_status.replaceAll('_', ' ')}). That is not a zero-point season.` : '';
-    q('#pd-drafted-count').textContent = String(picks.length).padStart(2, '0');
-    q('#pd-undo').disabled = !picks.length;
+    q('#pd-drafted-count').textContent = inLeague() && !leagueState.snapshot?.draft ? '—' : String(inLeague() ? leagueState.snapshot.draft.picks.length : picks.length).padStart(2, '0');
+    q('#pd-undo').disabled = !picks.length || inLeague();
+    q('#pd-undo').hidden = inLeague();
     root.querySelectorAll('#pd-board tr[data-player]').forEach(row => {
       row.classList.toggle('pd-row-selected', row.dataset.player === selected);
       row.querySelector('button').setAttribute('aria-pressed', String(row.dataset.player === selected));
@@ -116,20 +135,21 @@ async function start() {
     assignActors(); scene.draw();
   }
   function renderBoard() {
-    rows = filterPlayers(players, new Set(picks), filters());
+    const displayedPicks = boardPicks();
+    rows = filterPlayers(players, new Set(displayedPicks), filters());
     page = Math.max(0, Math.min(page, Math.ceil(rows.length / pageSize) - 1));
     const body = q('#pd-board'); body.replaceChildren();
     for (const p of rows.slice(page * pageSize, (page + 1) * pageSize)) {
       const row = document.createElement('tr'); row.dataset.player = p.id;
-      row.classList.toggle('pd-row-drafted', picks.includes(p.id));
+      row.classList.toggle('pd-row-drafted', displayedPicks.includes(p.id));
       const cell = document.createElement('td'), button = document.createElement('button');
       button.type = 'button'; button.className = 'pd-player-btn';
-      button.setAttribute('aria-label', `Select ${p.name}, ${p.position}, ${p.team || 'no assigned team'}${picks.includes(p.id) ? ', marked picked' : ''}`);
+      button.setAttribute('aria-label', `Select ${p.name}, ${p.position}, ${p.team || 'no assigned team'}${displayedPicks.includes(p.id) ? ', marked picked' : ''}`);
       const label = document.createElement('span'), detail = document.createElement('small');
-      label.textContent = p.name; detail.textContent = `${p.position} · ${p.team || '—'}${p.injury_status ? ' · ' + p.injury_status : ''}${picks.includes(p.id) ? ' · PICKED' : ''}`;
+      label.textContent = p.name; detail.textContent = `${p.position} · ${p.team || '—'}${p.injury_status ? ' · ' + p.injury_status : ''}${displayedPicks.includes(p.id) ? ' · PICKED' : ''}`;
       button.append(label, detail); cell.append(button); row.append(cell);
       for (const value of [p.history?.games, p.history?.ppr, p.bye]) { const td = document.createElement('td'); td.textContent = number(value); row.append(td); }
-      row.addEventListener('click', () => { selected = p.id; renderSelection(); react(picks.includes(p.id) ? 'picked' : 'confident', !picks.includes(p.id)); announce(`${p.name} selected.`); });
+      row.addEventListener('click', () => { selected = p.id; renderSelection(); react(boardPicks().includes(p.id) ? 'picked' : 'confident', !boardPicks().includes(p.id)); announce(`${p.name} selected.`); });
       body.append(row);
     }
     if (!rows.length) { const row = document.createElement('tr'), cell = document.createElement('td'); cell.colSpan = 4; cell.className = 'pd-empty'; cell.textContent = 'No matches. Try another search, position, or board filter.'; row.append(cell); body.append(row); }
@@ -140,26 +160,29 @@ async function start() {
   function refilter() {
     page = 0; renderBoard();
     if (!rows.some(p => p.id === selected)) selected = rows[0]?.id || null;
-    renderSelection(); react(picks.includes(selected) ? 'picked' : 'confident', false);
+    renderSelection(); react(boardPicks().includes(selected) ? 'picked' : 'confident', false);
   }
   q('#pd-search').addEventListener('input', refilter);
   for (const selector of ['#pd-position', '#pd-scope', '#pd-sort', '#pd-rostered']) q(selector).addEventListener('change', refilter);
   for (const [selector, delta] of [['#pd-prev', -1], ['#pd-next', 1]]) q(selector).addEventListener('click', () => {
-    page += delta; renderBoard(); selected = rows[page * pageSize]?.id || null; renderSelection(); react(picks.includes(selected) ? 'picked' : 'confident', false); announce(q('#pd-page').textContent + ' players.');
+    page += delta; renderBoard(); selected = rows[page * pageSize]?.id || null; renderSelection(); react(boardPicks().includes(selected) ? 'picked' : 'confident', false); announce(q('#pd-page').textContent + ' players.');
   });
   q('#pd-draft').addEventListener('click', () => {
-    if (!selected) return;
+    if (!selected || inLeague()) return;
     const removing = picks.includes(selected);
     picks = removing ? picks.filter(id => id !== selected) : [...picks, selected];
     save(); renderBoard(); renderSelection(); react(removing ? 'confident' : 'picked');
     announce(`${byId.get(selected).name} ${removing ? 'returned to board' : 'marked picked'}. ${picks.length} local picks.`);
   });
   q('#pd-undo').addEventListener('click', () => {
-    if (!picks.length) return;
+    if (!picks.length || inLeague()) return;
     selected = picks.pop(); save(); renderBoard(); renderSelection(); react('confident'); announce(`${byId.get(selected).name} returned to board.`);
   });
   window.addEventListener('storage', event => {
-    if (event.key === storageKey || event.key === null) { picks = restorePicks(event.newValue, allowed); renderBoard(); renderSelection(); react(picks.includes(selected) ? 'picked' : 'confident', false); announce('Local picks updated from another tab.'); }
+    if (event.key === storageKey || event.key === null) {
+      picks = restorePicks(event.newValue, allowed);
+      if (!inLeague()) { renderBoard(); renderSelection(); react(picks.includes(selected) ? 'picked' : 'confident', false); announce('Local picks updated from another tab.'); }
+    }
   });
   function syncMotion() {
     motion.disabled = reduced.matches;
@@ -186,6 +209,39 @@ async function start() {
     li.append(link, document.createTextNode(` · ${(source?.status || 'unavailable').replaceAll('_', ' ')}`)); q('#pd-sources').append(li);
   }
   localStatus(); syncMotion(); refilter();
+  const tableGuide = q('#pd-table-guide').textContent;
+  const leagueView = createLeagueView({ root: q('#pd-league'), players,
+    onConnect: input => league.connect(input), onDisconnect: () => league.disconnect(),
+    onRefresh: () => league.refresh(), onWeekChange: week => league.changeWeek(Number(week)),
+    onSelectPlayer: id => {
+      if (!byId.has(id)) return;
+      selected = id; renderSelection(); react(boardPicks().includes(id) ? 'picked' : 'confident', false);
+      announce(`${byId.get(id).name} selected in the player dossier.`);
+    },
+  });
+  const league = createLeagueController({ onChange: state => {
+    const previous = leagueState, wasConnected = inLeague(), oldPicks = boardPicks();
+    leagueState = state; leagueView.update(state);
+    root.dataset.league = inLeague() ? 'connected' : 'disconnected';
+    const changed = wasConnected !== inLeague() || oldPicks.join(',') !== boardPicks().join(',');
+    const nextDraft = state.snapshot?.draft, previousDraft = previous.snapshot?.draft;
+    const previousPicks = new Set(previousDraft?.picks.map(pick => `${pick.pickNo}:${pick.playerId}`));
+    const newPick = nextDraft && previousDraft && nextDraft.id === previousDraft.id && !state.snapshot.draftStale
+      ? nextDraft.picks.filter(pick => !previousPicks.has(`${pick.pickNo}:${pick.playerId}`)).at(-1) : null;
+    const newCatalogPick = newPick && byId.has(newPick.playerId);
+    if (newCatalogPick) selected = newPick.playerId;
+    q('#pd-picks-label').textContent = inLeague() ? 'Sleeper draft picks' : 'Marked picked';
+    q('#pd-picks-origin').textContent = inLeague() ? 'read-only session' : 'on this browser';
+    q('#pd-scope option[value="unmarked"]').textContent = inLeague() ? 'No fetched pick' : 'Unmarked';
+    q('#pd-table-guide').textContent = inLeague()
+      ? 'Picked means present in the fetched draft, not current roster or waiver availability. Keepers, trades and missing picks may differ. Historical PPR is not your league scoring or a forecast.' : tableGuide;
+    localStatus();
+    if (changed) renderBoard();
+    renderSelection(); react(boardPicks().includes(selected) ? 'picked' : 'confident', Boolean(newCatalogPick));
+    if (newCatalogPick) announce(`${byId.get(newPick.playerId).name} was picked in Sleeper.`);
+  } });
+  leagueView.update(leagueState);
+  window.addEventListener('pagehide', () => league.disconnect());
   root.setAttribute('aria-busy', 'false'); root.dataset.ready = 'true';
 }
 

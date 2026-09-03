@@ -1,4 +1,5 @@
 import argparse
+import hashlib
 import json
 import shutil
 import sys
@@ -11,6 +12,25 @@ POSITIONS = {"QB", "RB", "WR", "TE", "K", "DEF"}
 SOURCE_NAMES = ("sleeper_state", "sleeper_players", "nflverse_schedule", "nflverse_current_stats", "nflverse_prior_stats")
 SOURCE_FIELDS = ("name", "url", "status", "observed_at", "sha256")
 HISTORY_FIELDS = ("games", "passing_yards", "passing_tds", "rushing_yards", "rushing_tds", "carries", "targets", "receptions", "receiving_yards", "receiving_tds")
+
+
+def version_assets(site_dir, output):
+    assets = sorted(path for path in site_dir.rglob("*") if path.suffix in {".html", ".css", ".js", ".mjs", ".json"})
+    digest = hashlib.sha256()
+    for path in assets:
+        digest.update(path.relative_to(site_dir).as_posix().encode())
+        digest.update(path.read_bytes())
+    version = digest.hexdigest()[:16]
+    names = [path.relative_to(site_dir).as_posix() for path in assets if path.suffix != ".html"]
+    for path in assets:
+        if path.suffix not in {".html", ".js", ".mjs"}:
+            continue
+        text = path.read_text(encoding="utf-8")
+        for name in names:
+            for prefix in ("", "./"):
+                for quote in ("'", '"'):
+                    text = text.replace(f"{quote}{prefix}{name}{quote}", f"{quote}{prefix}{name}?v={version}{quote}")
+        (output / path.relative_to(site_dir)).write_text(text, encoding="utf-8")
 
 
 def player_history(snapshot, pid):
@@ -84,6 +104,7 @@ def build_site(snapshot_path=ROOT / "data/latest.json", output=ROOT / "_site", s
     payload = build_payload(query.load_snapshot(snapshot_path))
     serialized = json.dumps(payload, ensure_ascii=False, sort_keys=True, indent=2, allow_nan=False) + "\n"
     shutil.copytree(site_dir, output, dirs_exist_ok=True)
+    version_assets(site_dir, output)
     data_dir = output / "data"
     data_dir.mkdir(exist_ok=True)
     (data_dir / "players.json").write_text(serialized, encoding="utf-8")

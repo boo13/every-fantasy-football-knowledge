@@ -5,9 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="A retro football draft board with public player evidence, historical stats, and private browser-local pick tracking.">
   <meta name="color-scheme" content="dark">
+  <meta name="referrer" content="no-referrer">
   <title>Every — Large Language League</title>
   <link rel="icon" href="data:,">
   <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="league.css">
   <script type="module" src="app.js"></script>
 </head>
 <body>
@@ -17,10 +19,11 @@
     <div class="pd-brand"><span class="pd-brand-prefix" aria-hidden="true">Every</span><h1 aria-label="Every Large Language League"><span class="pd-brand-name"><span>Large Language</span><span>League</span></span></h1></div>
     <div class="pd-edition">FANTASY FOOTBALL<strong>DRAFT CENTRAL</strong></div>
   </header>
+  <section id="pd-league" aria-label="Private Sleeper league connection"></section>
   <div class="pd-demo"><strong id="pd-data-status" role="status">LOADING PUBLIC DATA</strong><span id="pd-observed">Fetching the published snapshot…</span></div>
   <div class="pd-scoreboard" aria-label="Public catalog and local board status">
     <div><span class="pd-label">Public catalog</span><span class="pd-score" id="pd-catalog-count">—</span></div>
-    <div><span class="pd-label">Marked picked</span><span class="pd-score"><span id="pd-drafted-count">00</span><small>on this browser</small></span></div>
+    <div><span class="pd-label" id="pd-picks-label">Marked picked</span><span class="pd-score"><span id="pd-drafted-count">00</span><small id="pd-picks-origin">on this browser</small></span></div>
     <div><span class="pd-label">Stats season</span><span class="pd-score" id="pd-history-year">—</span></div>
   </div>
   <section class="pd-stadium" aria-label="Original pixel-art football field; decorative reactions follow board actions">
@@ -56,7 +59,7 @@
       <p class="pd-stats-guide" id="pd-table-guide">PPR includes one point per reception. This historical sort is not a recommendation. “Unmarked” means only that you haven't marked a player on this browser.</p>
     </section>
   </div>
-  <section class="pd-evidence" aria-labelledby="pd-evidence-title"><div><span class="pd-label">Know what you're looking at</span><h2 id="pd-evidence-title">PUBLIC EVIDENCE. SHARED STARTING LINE.</h2><p>Player catalog and provider flags: Sleeper. Statistics and schedule: nflverse. Stats are joined only by verified, unique GSIS identifiers. Bye weeks are inferred only from a complete season schedule. Names and team assignments reflect the collection date, not a live feed.</p><p><strong>No automated ADP or projections yet.</strong> No league rules, private rosters, or manager information are collected. PPR is the historical metric displayed here, not an assumption about your league's scoring.</p></div><div><h3>COLLECTION HEALTH</h3><ul id="pd-sources"></ul><a href="https://github.com/boo13/every-fantasy-football-knowledge/blob/main/docs/season-2026/public-adp-and-projections.md">Read the ADP / projection coverage audit →</a></div></section>
+  <section class="pd-evidence" aria-labelledby="pd-evidence-title"><div><span class="pd-label">Know what you're looking at</span><h2 id="pd-evidence-title">PUBLIC EVIDENCE. SHARED STARTING LINE.</h2><p>Player catalog and provider flags: Sleeper. Statistics and schedule: nflverse. Stats are joined only by verified, unique GSIS identifiers. Bye weeks are inferred only from a complete season schedule. Names and team assignments reflect the collection date, not a live feed.</p><p><strong>No automated ADP or projections yet.</strong> The published evidence contains no league rules, private rosters, or manager information. An optional Sleeper connection loads league data into this visit only. Historical PPR is not an assumption about your league's scoring.</p></div><div><h3>COLLECTION HEALTH</h3><ul id="pd-sources"></ul><a href="https://github.com/boo13/every-fantasy-football-knowledge/blob/main/docs/season-2026/public-adp-and-projections.md">Read the ADP / projection coverage audit →</a></div></section>
   <footer class="pd-foot"><span>Original illustrative sprites and kits. Reactions are playful, not player sentiments or predictions.</span><a href="https://github.com/boo13/every-fantasy-football-knowledge">Knowledge repository ↗</a><a href="https://github.com/boo13/every-fantasy-football-knowledge/blob/main/NOTICE.md">Sources, attribution &amp; reuse</a></footer>
   <div class="pd-sr" id="pd-announcement" aria-live="polite" aria-atomic="true"></div>
   <noscript><p>JavaScript is needed for this draft board. All source data and football guidance are also available in the <a href="https://github.com/boo13/every-fantasy-football-knowledge">knowledge repository</a>.</p></noscript>

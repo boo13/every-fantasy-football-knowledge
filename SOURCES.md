@@ -4,12 +4,14 @@ Registry reviewed: 2026-08-31. Each collection records its own observed timestam
 
 | Source | Collected | Authority and limitations |
 | --- | --- | --- |
-| [Sleeper API](https://docs.sleeper.com/) | NFL season state; filtered QB/RB/WR/TE/K/DEF catalog; 24-hour aggregate trending adds/drops | Documented, unauthenticated, read-only API for noncommercial use. No user/league/roster/draft endpoints. Catalog records may be stale; provider status is not official game availability. Trending is attention, not value. |
+| [Sleeper API](https://docs.sleeper.com/) | NFL season state; filtered QB/RB/WR/TE/K/DEF catalog; 24-hour aggregate trending adds/drops | Documented, unauthenticated, read-only API for noncommercial use. The collector never uses user/league/roster/draft endpoints. Catalog records may be stale; provider status is not official game availability. Trending is attention, not value. |
 | [nflverse schedules](https://github.com/nflverse/nflverse-data/releases/tag/schedules) | Requested season's regular-season games, dates, times, teams and scores | Public structured secondary source; confirm flexed kickoffs and official schedule. Times are Eastern. Bootstrap observation used the underlying [nfldata file](https://github.com/nflverse/nfldata/blob/master/data/games.csv); future collection uses the release. |
 | [nflverse player stats](https://github.com/nflverse/nflverse-data/releases/tag/stats_player) | Current regular-season weekly offense; prior regular-season offense totals | Source-defined standard and PPR fantasy points plus usage/counting stats, not custom-league scoring. Current rows may lag games or include corrections; no IDP/kicker production is collected. |
 | [ESPN NFL RSS](https://www.espn.com/espn/rss/nfl/news) | Optional local collection: at most 12 deduplicated headline/link/publication-time records. Hosted collection leaves this to research. | The GitHub runner returned an empty HTML response during verification. Hosted runs explicitly use `manual_research`, not a false successful fetch. Discovery only; no article bodies or paywall bypass. Verify public news in dated research briefings. |
 
 ## Research sources, not automatically ingested
+
+The website's separately opted-in Sleeper league view uses documented league settings, rosters, weekly matchups, and current-draft endpoints only in browser memory. It never feeds this source registry's collected evidence, the weekly archive, or the LLM research library. See [the connection boundary](PRIVACY.md#optional-visit-only-sleeper-connection).
 
 - [NFL news](https://www.nfl.com/news/) and [official team directory](https://www.nfl.com/teams/): use original team announcements, practice reports, game-status reports and inactive lists. Prefer the specific article/report URL in research citations.
 - [NFL schedule](https://www.nfl.com/schedules/): confirm actual kickoff and bye timing.

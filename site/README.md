@@ -1,6 +1,19 @@
 # Every — Large Language League
 
-The public draft-room page uses the repository's recorded evidence. No fantasy login, analytics, league endpoint, or live draft connection is involved. Original pixel-art animations respond to selecting a player or marking a pick; there are no reaction-demo controls.
+The public draft-room page uses the repository's recorded evidence. An optional read-only Sleeper connection adds league screens without storing league data in the repository. No fantasy login, analytics, or server is involved. Original pixel-art animations respond to selections and new draft picks; there are no reaction-demo controls.
+
+## Connect Sleeper
+
+Paste your Sleeper league link or numeric ID into **Connect Sleeper**. The connection lasts for this visit only. It is not placed in the page URL or either browser-storage API; reload or disconnect to clear it. Nothing is sent to GitHub or a backend. The public default has no configured league. See [PRIVACY.md](../PRIVACY.md) for the full boundary and why a publicly accessible API is not an access-control system.
+
+- **League table:** actual W/L/T and points for/against with generic Team N aliases. Display order uses winning percentage (ties count half) then points for; it is not official playoff seeding or a reproduction of all Sleeper tiebreakers. Before games, no leader is invented.
+- **Matchups:** choose weeks 1–18. Scores come from the selected league, including commissioner overrides. Missing data stays unavailable, never a fabricated zero or final result.
+- **Rosters:** numbered teams, starters, reserves, and other rostered players, with exact public-player-ID lookups. Taxi assignments are not collected, so unassigned players are not automatically called bench players. Missing catalog players remain explicitly unmatched.
+- **Draft:** the league's current draft and recorded picks. Newly observed picks trigger the existing celebration and passed-over sprites; loading old picks does not replay the draft. Initial and subsequent empty responses do not simulate activity.
+
+Refreshes run after the preceding request finishes: normally every 15 seconds while drafting and 60 seconds otherwise, with backoff to five minutes on failures. Hidden tabs pause and cancel requests; returning starts a fresh request. Manual refresh is available. This is polling, not guaranteed instantaneous delivery. Disconnect and replaced connections invalidate in-flight responses. Failed refreshes preserve last-good evidence with visible warnings; optional draft/matchup failures retain it only for the same draft/week.
+
+No users, profile pictures, manager names, team names, chats, transactions, or ownership mappings are requested for display. The full NFL player catalog is not fetched per viewer. League rules are shown separately from the public historical PPR reference. A player absent from fetched draft picks is not necessarily available in the league: keepers, trades, current rosters, and missing coverage can differ. Make lineup, trade, and draft changes in Sleeper itself.
 
 ## Build and check
 
@@ -8,7 +21,9 @@ From the repository root, run `just site` (or `python3 scripts/build_site.py`). 
 
 For the optional rendered-layout regression, open the built or deployed site with Playwright CLI, then run `playwright-cli -s=YOUR_SESSION run-code --filename tests/browser_geometry.cjs --raw` from the repository root. It checks all eight field positions at five viewport widths, including nameplate/HUD collisions; it only selects players and does not mark any picks.
 
-The builder accepts `--snapshot PATH --output PATH`. Data is generated once per build, not fetched from Sleeper by every visitor. There is no new collection schedule. The existing weekly collection remains the source of updates.
+For the full browser suite, use `just browser-checks YOUR_SESSION` in a **fresh disposable browser** already showing the built or deployed page, with no connection or saved manual picks. The league regression intercepts API requests using explicitly fictional fixtures, checks live-pick animation, failures, privacy, and five screen widths, and leaves one synthetic local pick in that disposable profile. Never run it in a participant's active browser session. Build output versions asset URLs so a deployment does not mix cached old JavaScript with new league screens.
+
+The builder accepts `--snapshot PATH --output PATH`. Public catalog data is generated once per build, not fetched from Sleeper by every visitor. There is no new collection schedule. The existing weekly collection remains the source of public evidence updates; visit-only league polling is separate.
 
 ## What the numbers mean
 
@@ -21,7 +36,7 @@ The builder accepts `--snapshot PATH --output PATH`. Data is generated once per 
 
 ## Private local picks
 
-Mark picked, return to board, and undo affect only the browser. Local storage contains a version number and ordered public Sleeper identifiers, in a season-scoped key. No manager names, league details, or ownership assignments are requested. Nothing is uploaded. Tabs in the same browser stay in sync through storage events; other browsers and devices do not. If storage is blocked, the page clearly reports that picks last only for the current visit. There is no shared real-time draft room or recovery after clearing browser data.
+When disconnected, mark picked, return to board, and undo affect only the browser. Local storage contains a version number and ordered public Sleeper player identifiers, in a season-scoped key. Nothing is uploaded. Tabs in the same browser stay in sync through storage events; other browsers and devices do not. If storage is blocked, the page clearly reports that picks last only for the current visit. Connecting hides manual controls and shows fetched draft picks instead; disconnect restores the saved manual board untouched. There is no recovery after clearing browser data.
 
 ## Original artwork
 
