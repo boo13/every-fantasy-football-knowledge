@@ -1,5 +1,9 @@
 # Every Fantasy Football Knowledge
 
+**[Open the draft room](https://boo13.github.io/every-fantasy-football-knowledge/)** — original pixel-art football, public player evidence, historical statistics, and browser-local pick tracking. No private league connection. [Site operation and publishing](../site/README.md).
+
+The [Pages workflow](workflows/pages.yml) builds and deploys the public website after main-branch pushes and completion of weekly collection. See the site guide for data limitations, local pick storage, and how to stop publishing.
+
 A public, shared research library for fantasy-football players and their LLMs. Beginner-friendly, source-cited, and designed to grow more useful each week. Same evidence for everyone; no private league, personal, or company information.
 
 [![Checks](https://github.com/boo13/every-fantasy-football-knowledge/actions/workflows/check.yml/badge.svg)](https://github.com/boo13/every-fantasy-football-knowledge/actions/workflows/check.yml)

@@ -1,5 +1,6 @@
 test:
     python3 -m unittest discover -s tests -v
+    node --test tests/test_board_state.mjs
 
 validate:
     python3 scripts/validate.py
@@ -21,3 +22,6 @@ audit:
 [positional-arguments]
 query *args:
     python3 scripts/query.py "$@"
+
+site:
+    python3 scripts/build_site.py

@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A retro football draft board with public player evidence, historical stats, and private browser-local pick tracking.">
+  <meta name="color-scheme" content="dark">
+  <title>Every — Large Language League</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+<a class="skip-link" href="#pd-search">Skip to player search</a>
+<main id="pixel-draft-room" data-motion="off" aria-busy="true">
+  <header class="pd-head">
+    <div class="pd-brand"><span class="pd-brand-prefix" aria-hidden="true">Every</span><h1 aria-label="Every Large Language League"><span class="pd-brand-name"><span>Large Language</span><span>League</span></span></h1></div>
+    <div class="pd-edition">FANTASY FOOTBALL<strong>DRAFT CENTRAL</strong></div>
+  </header>
+  <div class="pd-demo"><strong id="pd-data-status" role="status">LOADING PUBLIC DATA</strong><span id="pd-observed">Fetching the published snapshot…</span></div>
+  <div class="pd-scoreboard" aria-label="Public catalog and local board status">
+    <div><span class="pd-label">Public catalog</span><span class="pd-score" id="pd-catalog-count">—</span></div>
+    <div><span class="pd-label">Marked picked</span><span class="pd-score"><span id="pd-drafted-count">00</span><small>on this browser</small></span></div>
+    <div><span class="pd-label">Stats season</span><span class="pd-score" id="pd-history-year">—</span></div>
+  </div>
+  <section class="pd-stadium" aria-label="Original pixel-art football field; decorative reactions follow board actions">
+    <canvas class="pd-field" aria-hidden="true"></canvas><canvas class="pd-player-layer" aria-hidden="true"></canvas>
+    <span class="pd-scene-label pd-pixel">DRAFT FIELD</span><span class="pd-scene-mode" id="pd-scene-mode">LOCAL BOARD</span>
+    <div class="pd-actor" aria-hidden="true"><span class="pd-pointer"></span><span class="pd-nameplate" id="pd-nameplate"></span></div>
+    <div class="pd-bubble pd-pixel" id="pd-bubble" aria-hidden="true">CALL MY<br>NAME.</div>
+    <div class="pd-scene-detail"><strong id="pd-mood-title">Welcome to the field</strong><span id="pd-mood-subtitle">Select a player below to get started.</span></div>
+    <div class="pd-confetti" aria-hidden="true"></div>
+  </section>
+  <div class="pd-toolbar"><p id="pd-local-status">Your picks stay in this browser. No live league connection.</p><label class="pd-motion"><input type="checkbox" id="pd-motion" checked>Animations</label><button class="pd-secondary" id="pd-undo" disabled>Undo last pick</button></div>
+  <div class="pd-data">
+    <section class="pd-selected-panel" aria-label="Selected player evidence">
+      <div class="pd-selection-main"><div class="pd-panel-head"><span class="pd-label">Player dossier</span><span class="pd-tag" id="pd-picked-status">UNMARKED</span></div><div class="pd-selected-title"><h2 id="pd-player-title">Loading players…</h2></div><p class="pd-player-meta" id="pd-player-meta"></p>
+        <div class="pd-facts"><div><b id="pd-points">—</b><span id="pd-points-label">Historical PPR</span></div><div><b id="pd-per-game">—</b><span>PPR / game</span></div><div><b id="pd-bye">—</b><span id="pd-bye-label">Bye week</span></div></div>
+      </div>
+      <button type="button" class="pd-draft" id="pd-draft" disabled>Mark picked →</button>
+      <div class="pd-depth"><h3 id="pd-history-heading">HISTORICAL PRODUCTION</h3><dl id="pd-usage" class="pd-usage"></dl><p class="pd-stats-guide" id="pd-history-note"></p></div>
+      <div class="pd-provider"><span class="pd-label">Provider status · not an official injury report</span><p id="pd-provider-status">—</p></div>
+      <p class="pd-stats-guide">Missing data is shown as —, never zero. Historical points are not a forecast or draft ranking.</p>
+    </section>
+    <section class="pd-market" aria-label="Public player catalog">
+      <div class="pd-panel-head"><h2>THE DRAFT BOARD</h2><span class="pd-subtitle" id="pd-result-count"></span></div>
+      <div class="pd-filters">
+        <label class="pd-search-label">Find a player<input type="search" id="pd-search" placeholder="Name or team…" autocomplete="off" maxlength="100"></label>
+        <label>Position<select id="pd-position"><option value="">All positions</option><option>QB</option><option>RB</option><option>WR</option><option>TE</option><option>K</option><option>DEF</option></select></label>
+        <label>Board<select id="pd-scope"><option value="unmarked">Unmarked</option><option value="picked">Picked</option><option value="all">All players</option></select></label>
+        <label>Sort<select id="pd-sort"><option value="ppr">Historical PPR ↓</option><option value="per_game">Historical PPR/game ↓</option><option value="name">Name A–Z</option></select></label>
+        <label class="pd-rostered"><input type="checkbox" id="pd-rostered" checked>Assigned an NFL team</label>
+      </div>
+      <div class="pd-table-wrap"><table><thead><tr><th scope="col">PLAYER / TEAM</th><th scope="col">GAMES</th><th scope="col">PPR</th><th scope="col">BYE</th></tr></thead><tbody id="pd-board"></tbody></table></div>
+      <div class="pd-pagination"><button class="pd-secondary" id="pd-prev" disabled>← Previous</button><span id="pd-page">Page 1</span><button class="pd-secondary" id="pd-next" disabled>Next →</button></div>
+      <p class="pd-stats-guide" id="pd-table-guide">PPR includes one point per reception. This historical sort is not a recommendation. “Unmarked” means only that you haven't marked a player on this browser.</p>
+    </section>
+  </div>
+  <section class="pd-evidence" aria-labelledby="pd-evidence-title"><div><span class="pd-label">Know what you're looking at</span><h2 id="pd-evidence-title">PUBLIC EVIDENCE. SHARED STARTING LINE.</h2><p>Player catalog and provider flags: Sleeper. Statistics and schedule: nflverse. Stats are joined only by verified, unique GSIS identifiers. Bye weeks are inferred only from a complete season schedule. Names and team assignments reflect the collection date, not a live feed.</p><p><strong>No automated ADP or projections yet.</strong> No league rules, private rosters, or manager information are collected. PPR is the historical metric displayed here, not an assumption about your league's scoring.</p></div><div><h3>COLLECTION HEALTH</h3><ul id="pd-sources"></ul><a href="https://github.com/boo13/every-fantasy-football-knowledge/blob/main/docs/season-2026/public-adp-and-projections.md">Read the ADP / projection coverage audit →</a></div></section>
+  <footer class="pd-foot"><span>Original illustrative sprites and kits. Reactions are playful, not player sentiments or predictions.</span><a href="https://github.com/boo13/every-fantasy-football-knowledge">Knowledge repository ↗</a><a href="https://github.com/boo13/every-fantasy-football-knowledge/blob/main/NOTICE.md">Sources, attribution &amp; reuse</a></footer>
+  <div class="pd-sr" id="pd-announcement" aria-live="polite" aria-atomic="true"></div>
+  <noscript><p>JavaScript is needed for this draft board. All source data and football guidance are also available in the <a href="https://github.com/boo13/every-fantasy-football-knowledge">knowledge repository</a>.</p></noscript>
+</main>
+</body>
+</html>
