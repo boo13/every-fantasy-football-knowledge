@@ -233,6 +233,8 @@ class BuildSiteTests(unittest.TestCase):
             with contextlib.redirect_stdout(io.StringIO()):
                 self.assertEqual(build_site.main(["--output", str(output)]), 0)
             self.assertTrue((output / "index.html").is_file())
+            self.assertRegex((output / "index.html").read_text(), r'app\.js\?v=[a-f0-9]{16}')
+            self.assertRegex((output / "app.js").read_text(), r'\./scene\.js\?v=[a-f0-9]{16}')
             self.assertGreater(len(json.loads((output / "data/players.json").read_text())["players"]), 0)
 
 
