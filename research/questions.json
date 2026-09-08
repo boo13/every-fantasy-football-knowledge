@@ -31,7 +31,7 @@
     "created_at": "2026-09-01T00:11:47.854195+00:00",
     "question": "Which current aggregate trend leaders have independently verified role or availability changes?",
     "evidence_needed": "Specific dated official team reports; do not infer a cause from aggregate counts.",
-    "review_on": "2026-09-08",
+    "review_on": "2026-09-15",
     "status": "open",
     "reviews": [
       {
@@ -48,6 +48,17 @@
           "https://www.neworleanssaints.com/news/new-orleans-saints-53-man-roster-cut-transactions-august-30-2026-nfl-season",
           "https://www.buccaneers.com/news/bucs-go-heavy-in-trenches-on-first-53-man-roster-of-2026"
         ]
+      },
+      {
+        "reviewed_at": "2026-09-08T15:57:41Z",
+        "result": "open",
+        "summary": "Reviewed selected prior and current trend subjects in research/2026-09-08.md. Detroit records Pacheco on Reserve/Injured; Green Bay reporting describes Lloyd as a likely Week 1 lead back; New Orleans reporting updates its receiver context. These reports do not establish current trend leaders' touch shares or explain aggregate transactions. Roschon Johnson leads both add and drop lists in the September 8 observation, but a new official workload was not established. Keep open for game-status and completed-game evidence.",
+        "public_sources": [
+          "https://www.detroitlions.com/team/transactions/2026",
+          "https://www.packers.com/news/rb-marshawn-lloyd-as-ready-as-he-s-ever-been-to-help-packers-sep-2-2026",
+          "https://www.neworleanssaints.com/news/rookie-bryce-lance-ran-through-when-receiver-door-opened-with-new-orleans-saints",
+          "https://github.com/boo13/every-fantasy-football-knowledge/blob/main/data/snapshots/2026-09-08T155357128454Z.json"
+        ]
       }
     ]
   },
@@ -59,7 +70,18 @@
     "evidence_needed": "Successful current-season release plus comparison to completed schedule games.",
     "review_on": "2026-09-15",
     "status": "open",
-    "reviews": []
+    "reviews": [
+      {
+        "reviewed_at": "2026-09-08T15:57:41Z",
+        "result": "open",
+        "summary": "The September 8 15:53:57 UTC observation still records HTTP 404 / not_yet_available for 2026 weekly statistics, zero current-stat rows and no schedule rows with both scores populated. The first scheduled game is September 9, consistent with Seattle's Wednesday-opener report. Release availability and coverage of completed games therefore remain unresolved until games are played; revisit September 15.",
+        "public_sources": [
+          "https://github.com/nflverse/nflverse-data/releases/download/stats_player/stats_player_week_2026.csv",
+          "https://github.com/boo13/every-fantasy-football-knowledge/blob/main/data/snapshots/2026-09-08T155357128454Z.json",
+          "https://www.seahawks.com/news/2026-week-1-injury-report-seahawks-vs-patriots"
+        ]
+      }
+    ]
   },
   {
     "id": "Q-2026-004",
@@ -69,7 +91,17 @@
     "evidence_needed": "Original game-week status and transaction reports plus complete Week 1 game usage for the selected rookies; distinguish unavailable players, unmatched IDs and missing statistical coverage from zero production. Compare with docs/season-2026/rookie-opportunity-watch.md without inventing routes or target-share denominators.",
     "review_on": "2026-09-15",
     "status": "open",
-    "reviews": []
+    "reviews": [
+      {
+        "reviewed_at": "2026-09-08T15:57:41Z",
+        "result": "open",
+        "summary": "An early partial review finds New Orleans' September 3 report reiterating Tyson's injured-reserve return designation and minimum four-game absence. It does not establish a return date or receiver target shares. Full Week 1 usage for the twelve-rookie baseline is not available in the September 8 collection. Preserve the baseline and keep the complete comparison due September 15.",
+        "public_sources": [
+          "https://www.neworleanssaints.com/news/rookie-bryce-lance-ran-through-when-receiver-door-opened-with-new-orleans-saints",
+          "https://github.com/boo13/every-fantasy-football-knowledge/blob/main/data/snapshots/2026-09-08T155357128454Z.json"
+        ]
+      }
+    ]
   },
   {
     "id": "Q-2026-005",
@@ -78,7 +110,22 @@
     "question": "By September 8, what has changed in the access, update dates, formats, samples and availability assumptions of the public draft sources audited on August 31?",
     "evidence_needed": "Recheck the original public sources linked in docs/season-2026/public-adp-and-projections.md; identify changed and unchanged metadata, access failures and remaining scoring or roster assumptions. Preserve the prior audit and Q-2026-001 answer.",
     "review_on": "2026-09-08",
-    "status": "open",
-    "reviews": []
+    "status": "answered",
+    "reviews": [
+      {
+        "reviewed_at": "2026-09-08T15:57:41Z",
+        "result": "answered",
+        "summary": "Completed the September 8 metadata/access comparison in research/2026-09-08.md. FFC now shows September 1–8 mock-draft windows with 5,144 PPR and 1,218 non-PPR drafts for 12-team 2026 tables; one documented API request again returned HTTP 403. ESPN's guide now says September 7 and retains its 17-game baseline. FantasyPros QB projections say September 8; its five ADP providers show September 6–7 dates. Scoring-label ambiguity, contributor/availability treatment, and unverified roster/sample assumptions remain explicit. This answers the dated recheck, not all access or methodology limitations; the original audit and Q-2026-001 remain preserved.",
+        "public_sources": [
+          "https://fantasyfootballcalculator.com/adp/ppr",
+          "https://fantasyfootballcalculator.com/adp",
+          "https://fantasyfootballcalculator.com/api/v1/adp/ppr?teams=12&year=2026",
+          "https://g.espncdn.com/s/ffldraftkit/26/NFLDK2026_CS_ClayProjections2026.pdf",
+          "https://www.fantasypros.com/nfl/projections/qb.php?week=draft",
+          "https://www.fantasypros.com/nfl/adp/ppr-overall.php",
+          "https://www.fantasypros.com/scoring-settings/"
+        ]
+      }
+    ]
   }
 ]
