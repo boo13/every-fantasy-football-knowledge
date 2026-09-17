@@ -44,7 +44,7 @@ When disconnected, mark picked, return to board, and undo affect only the browse
 
 The opening is an original 24-second, low-resolution canvas sequence: aerial stadium, cheering stands, sideline bench, referee whistle gesture, first-person snap, and a block wipe. It is silent and does not depict a real game or league. No downloaded game footage, external video host, or media tracker is used.
 
-Players have staggered idle gestures. Hover a field player or a matching player row to get a short response; keyboard focus on player buttons has the same effect. Hover does not select, draft, or change the dossier. Selection triggers a short confident gesture. A recorded pick triggers a celebration and a brief passed-over gesture from another sprite, taking priority over decorative idle movement.
+Players have eight pose-specific idle rhythms with pauses between gestures. Hover a field player or a matching player row to get a short acknowledgment that settles back into idle; keyboard focus on player buttons has the same effect. Hover does not select, draft, or change the dossier. Selection triggers a short confident gesture. A recorded pick triggers a celebration and a brief passed-over gesture from another sprite, taking priority over decorative idle movement.
 
 The **Animations** checkbox below the opening stops both the intro and player movement. The operating system's reduced-motion setting takes precedence. Continuous animation pauses offscreen and in hidden tabs; static poses retain the same information. Reactions are decorative and do not represent real player emotions or predictions.
 

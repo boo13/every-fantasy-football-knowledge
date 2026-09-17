@@ -1,5 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { drawIntroFrame } from '../site/intro-art.mjs';
 import { INTRO_DURATION, createIntro, sceneAt } from '../site/intro.mjs';
 
 test('the attract sequence gives all five shots a readable interval before its wipe', () => {
@@ -92,4 +93,35 @@ test('intro scene callbacks may stop playback without another frame being queued
   assert.equal(h.canvas.dataset.scene, 'crowd');
   assert.equal(h.frames.size, 0);
   assert.equal(h.canvas.dataset.playing, 'false');
+});
+
+function rasterCommands(scene, elapsed) {
+  const commands = [];
+  const ctx = { fillRect(...coordinates) { commands.push([this.fillStyle, ...coordinates]); } };
+  drawIntroFrame(ctx, scene, elapsed);
+  assert.equal(ctx.imageSmoothingEnabled, false);
+  return commands;
+}
+
+test('all six shots draw finite integer pixel spans throughout their gestures', () => {
+  for (const [scene, duration] of [['stadium', 4400], ['crowd', 4100], ['bench', 4500], ['referee', 4200], ['snap', 5400], ['wipe', 1400]]) {
+    for (let elapsed = 0; elapsed < duration; elapsed += 230) {
+      const commands = rasterCommands(scene, elapsed);
+      assert.ok(commands.length > 100, `${scene} should contain painted artwork`);
+      assert.ok(commands.every(([, ...span]) => span.every(Number.isInteger)), `${scene} must stay on the pixel grid`);
+    }
+  }
+});
+
+test('the finished wipe returns exactly to the opening stadium artwork', () => {
+  assert.deepEqual(rasterCommands('wipe', 1400), rasterCommands('stadium', 0));
+});
+
+test('the ball approaches the catch without a discontinuous size or position jump', () => {
+  const bounds = elapsed => {
+    const spans = rasterCommands('snap', elapsed).filter(([color]) => color === '#945031');
+    return [Math.min(...spans.map(([, x]) => x)), Math.max(...spans.map(([, x, , width]) => x + width)), Math.min(...spans.map(([, , y]) => y)), Math.max(...spans.map(([, , y, , height]) => y + height))];
+  };
+  const before = bounds(3899), caught = bounds(3900);
+  before.forEach((edge, index) => assert.ok(Math.abs(edge - caught[index]) <= 1));
 });

@@ -141,6 +141,58 @@ test('field pointer hit-testing uses painted pixels, not the rectangular canvas 
   assert.ok(h.actors().every(player => player.motion !== 'hover'));
 });
 
+test('hover acknowledgment plays once, settles into idle, and replays only after leaving', t => {
+  const h = harness(t);
+  for (const player of h.players) {
+    h.scene.hover(player.id);
+    const frames = new Set();
+    for (let tick = 0; tick < 12; tick++) {
+      h.scene.hover(player.id);
+      const actor = h.actors().find(p => p.id === player.id);
+      if (actor.motion === 'hover') frames.add(actor.frameKey);
+      h.tick(140);
+    }
+    assert.ok(frames.size >= 3, `${player.slot} has a multi-frame acknowledgment`);
+    assert.notEqual(h.actors().find(p => p.id === player.id).motion, 'hover');
+    assert.equal(h.layer.dataset.hovered, player.id);
+    h.scene.hover(null); h.scene.hover(player.id);
+    assert.equal(h.actors().find(p => p.id === player.id).motion, 'hover');
+    h.scene.hover(null);
+  }
+});
+
+test('resting characters have distinct gesture rhythms with actual pauses', t => {
+  const h = harness(t);
+  const rhythms = new Map(h.players.map(p => [p.id, []]));
+  for (let tick = 0; tick < 70; tick++) {
+    h.tick();
+    h.actors().forEach(p => rhythms.get(p.id).push(p.motionStep));
+  }
+  assert.equal(new Set([...rhythms.values()].map(steps => steps.join(','))).size, 8);
+  for (const steps of rhythms.values()) {
+    assert.ok(steps.some(step => step !== 0));
+    assert.ok(steps.join('').includes('00000'));
+  }
+});
+
+test('a stationary pointer remains engaged as an authored head pixel moves', t => {
+  const h = harness(t);
+  const p = h.actors().find(player => player.id === 'fixture-A');
+  h.scene.setMotion(false);
+  const drawing = h.layer.context.drawings.find(value => value.bounds[0] === p.x && value.bounds[1] === p.y);
+  const [x, y] = [...drawing.image.context.pixels.keys()].map(key => key.split(',').map(Number))
+    .find(([x, y]) => x >= 13 && x <= 22 && y >= 7 && y <= 14 && !drawing.image.context.pixels.has(`${x - 1},${y}`));
+  const pointer = { clientX: (p.x + (x + .5) * p.width / 32) * 2, clientY: (p.y + (y + .5) * p.height / 48) * 2, pointerType: 'mouse' };
+  h.scene.setMotion(true);
+  h.layer.dispatch('pointermove', pointer);
+  assert.equal(h.layer.dataset.hovered, p.id);
+  for (let tick = 0; tick < 10; tick++) {
+    h.tick(); h.layer.dispatch('pointermove', pointer);
+    assert.equal(h.layer.dataset.hovered, p.id);
+  }
+  assert.notEqual(h.actors().find(player => player.id === p.id).motion, 'hover');
+});
+
 test('idle and hover cannot replace finite pick or passed-over frames', t => {
   const h = harness(t);
   h.scene.react('picked', 'fixture-A'); h.scene.draw(3);
