@@ -19,17 +19,33 @@ export function createScene(root, spriteArt, state) {
     reaction:{head:[11,22,6,15],arms:[[5,10,18,25],[23,27,18,25]],waist:28},
   };
   const contains=(box,x,y)=>x>=box[0]&&x<=box[1]&&y>=box[2]&&y<=box[3];
+  const gestures={
+    hips:{idle:[0,1,1,0,3,0],hover:[1,1,3,3,1,0],beat:190,pause:3100},
+    ready:{idle:[0,2,2,0,1,0],hover:[2,2,1,1,2,0],beat:160,pause:2600},
+    turn:{idle:[0,1,1,1,0],hover:[1,3,3,1,1,0],beat:210,pause:3300},
+    kneel:{idle:[0,3,3,0,1,0],hover:[1,1,3,3,1,0],beat:230,pause:3500},
+    jog:{idle:[0,2,0,2,0],hover:[2,3,2,3,2,0],beat:150,pause:2300},
+    stretch:{idle:[0,2,2,2,0,3,0],hover:[3,3,2,2,3,0],beat:220,pause:3000},
+    reach:{idle:[0,3,3,0,3,0],hover:[3,1,3,1,3,0],beat:180,pause:2800},
+    rest:{idle:[0,1,0,2,2,0],hover:[1,2,2,3,1,0],beat:200,pause:3700},
+  };
   function moving() { return !destroyed&&motionEnabled&&!reduced.matches&&!document.hidden&&inView&&stage.clientWidth>0&&stage.clientHeight>0; }
   function idleStep(p) {
-    const index=p.slot.charCodeAt(0)-65;
-    return [0,1,1,2,2,1,0,3,3,0][Math.floor(((motionTime+index*613)%(4200+index*190))/180)]||0;
+    const index=p.slot.charCodeAt(0)-65,gesture=gestures[spots[p.slot].pose];
+    const cycle=gesture.idle.length*gesture.beat+gesture.pause;
+    return gesture.idle[Math.floor(((motionTime+index*947)%cycle)/gesture.beat)]||0;
+  }
+  function hoverStep(p) {
+    const gesture=gestures[spots[p.slot].pose];
+    return gesture.hover[Math.floor((motionTime-hoverStarted)/gesture.beat)]??null;
   }
   function pixelOffset(p,pose,x,y,step,attention) {
     const joint=joints[pose]||joints.reaction, direction=p.slot.charCodeAt(0)%2?1:-1;
     const head=contains(joint.head,x,y), arm=joint.arms.some(box=>contains(box,x,y));
     if(attention) {
-      if(head)return [direction,-1];
-      if(arm)return [x<16?1:-1,-Math.min(step,2)];
+      if(head)return step===1?[direction,0]:step===2?[0,1]:[direction,-1];
+      if(arm&&step===3)return [x<16?1:-1,-1];
+      if(step===2&&y<joint.waist)return [0,1];
     } else {
       if(step===1&&head)return [direction,0];
       if(step===2&&y<joint.waist)return [['ready','jog','stretch','kneel'].includes(pose)?0:direction,1];
@@ -122,15 +138,16 @@ export function createScene(root, spriteArt, state) {
       const height=Math.round(scale*4.8),width=Math.round(height*32/48),x=Math.round(ground[0]-width/2),y=Math.round(ground[1]-height*45/48);
       const reacting=p.id===selected||p.id===passedOver;
       const protectedReaction=reacting&&frame>0;
-      const attention=active&&!protectedReaction&&p.id===hovered;
-      const step=active&&!protectedReaction?(attention?Math.min(2,1+Math.floor((motionTime-hoverStarted)/180)):idleStep(p)):0;
+      const response=active&&!protectedReaction&&p.id===hovered?hoverStep(p):null;
+      const attention=response!==null;
+      const step=active&&!protectedReaction?(attention?response:idleStep(p)):0;
       const motion=protectedReaction?'reaction':!active?'still':attention?'hover':step?'idle':'rest';
       const pose=p.id===selected?mood:p.id===passedOver?'annoyed':spot.pose,art=sprite(p,pose,reacting?frame:0,step,attention);
       ctx.fillStyle='#285f12';
       for(let sy=-2;sy<=2;sy++)for(let sx=-Math.round(width*.34);sx<=Math.round(width*.45);sx++)if((sx+sy)%2===0&&Math.abs(sx)/(width*.46)+Math.abs(sy)/4<1.3)ctx.fillRect(Math.round(ground[0]+sx+2),Math.round(ground[1]+sy),1,1);
       ctx.drawImage(art,x,y,width,height);
       scene.push({id:p.id,pose,frameKey:art.dataset.frameKey,worldX:spot.x,depth:spot.z,x,y,width,height,scale,motion,motionStep:step});
-      rendered.push({id:p.id,x,y,width,height,art});
+      rendered.push({id:p.id,x,y,width,height,art,restArt:sprite(p,pose,reacting?frame:0)});
       if(layout&&p.id===selected){
         actor.style.cssText='left:'+x*2+'px;top:'+y*2+'px;width:'+width*2+'px;height:'+height*2+'px';
         const bubble=q('#pd-bubble'),bw=bubble.offsetWidth;
@@ -192,7 +209,8 @@ export function createScene(root, spriteArt, state) {
       const dx=Math.floor(x-p.x),dy=Math.floor(y-p.y);
       if(dx<0||dx>=p.width||dy<0||dy>=p.height)return false;
       const sx=Math.floor((dx+.5)*32/p.width),sy=Math.floor((dy+.5)*48/p.height);
-      return p.art.coverage[sy*32+sx];
+      // Keep a stationary pointer engaged when a helmet or hand moves by one pixel.
+      return p.art.coverage[sy*32+sx]||p.restArt.coverage[sy*32+sx];
     });
     hover(hit?.id||null);
   }

@@ -94,11 +94,16 @@ function distantStands(ctx, top = 0, bottom = 71, seed = 0) {
 function smallPlayer(ctx, x, y, side, pose = 0, scale = 1) {
   const { rect, oval, line } = pen(ctx);
   const shirt = side ? C.white : C.green;
+  const arm = pose ? 1 + pose : 0;
   oval(x - 4 * scale, y + 7 * scale, 10 * scale, 3 * scale, C.grassShade);
+  line(x - 3 * scale, y + scale, x - (4 + arm) * scale, y + (4 - arm) * scale, C.skinShade, 2 * scale);
+  line(x + 3 * scale, y + scale, x + (4 + arm) * scale, y + (4 + arm) * scale, C.skin, 2 * scale);
   rect(x - 3 * scale, y, 7 * scale, 5 * scale, side ? C.concrete : C.greenDark);
   rect(x - 3 * scale, y, 6 * scale, 3 * scale, shirt);
   rect(x - 2 * scale, y - 4 * scale, 4 * scale, 4 * scale, side ? C.pale : C.gold);
   rect(x - scale, y - 4 * scale, 3 * scale, scale, side ? C.white : C.goldLight);
+  rect(x + scale, y - 2 * scale, 2 * scale, scale, C.ink);
+  rect(x - scale, y + scale, 2 * scale, 2 * scale, side ? C.steel : C.gold);
   line(x - 2 * scale, y + 4 * scale, x - (2 + pose) * scale, y + 8 * scale, C.pale, 2 * scale);
   line(x + 2 * scale, y + 4 * scale, x + (2 + pose) * scale, y + 8 * scale, C.white, 2 * scale);
   rect(x - (3 + pose) * scale, y + 8 * scale, 3 * scale, scale, C.ink);
@@ -198,7 +203,8 @@ function fan(ctx, x, y, size, seed, time, foreground = false) {
   const { rect, poly, oval, line, limb } = pen(ctx);
   const skin = SKINS[seed % SKINS.length], shirt = SHIRTS[seed % SHIRTS.length];
   const phase = Math.floor(time / (180 + seed % 4 * 40) + seed * 1.7) % 6;
-  const raised = seed % 3 !== 0, lift = raised ? [0, 2, 5, 6, 4, 1][phase] : [0, 0, 1, 2, 1, 0][phase];
+  const clapping = seed % 5 === 2;
+  const raised = seed % 3 !== 0 && !clapping, lift = raised ? [0, 2, 5, 6, 4, 1][phase] : [0, 0, 1, 2, 1, 0][phase];
   const s = size / 40, p = (a, b) => [x + a * s, y + b * s];
   const shape = (points, color) => poly(points.map(([a, b]) => p(a, b)), color);
   oval(x - 14 * s, y + 31 * s, 30 * s, 7 * s, C.ink);
@@ -219,8 +225,9 @@ function fan(ctx, x, y, size, seed, time, foreground = false) {
     rect(...p(-8, -7), 17 * s, 5 * s, C.gold);
     rect(...p(4, -3), 10 * s, 2 * s, C.goldLight);
   }
-  const leftElbow = raised ? p(-17, 10 - lift) : p(-13, 24), leftHand = raised ? p(-21, -6 - lift) : p(-3 + lift, 21);
-  const rightElbow = seed % 4 ? p(19, 10 - lift) : p(16, 25), rightHand = seed % 4 ? p(24, -4 - lift) : p(5 - lift, 21);
+  const clapGap = [5, 3, 0, 0, 3, 5][phase];
+  const leftElbow = raised ? p(-17, 10 - lift) : p(-13, 24), leftHand = clapping ? p(-clapGap, 17) : raised ? p(-21, -6 - lift) : p(-3 + lift, 21);
+  const rightElbow = clapping ? p(15, 25) : seed % 4 ? p(19, 10 - lift) : p(16, 25), rightHand = clapping ? p(4 + clapGap, 17) : seed % 4 ? p(24, -4 - lift) : p(5 - lift, 21);
   for (const [shoulder, elbow, hand] of [[p(-10, 14), leftElbow, leftHand], [p(11, 14), rightElbow, rightHand]]) {
     limb(shoulder, elbow, 7 * s, shirt, shirt, C.deep);
     limb(elbow, hand, 5 * s, skin[0], skin[1], skin[2]);
@@ -282,21 +289,22 @@ function benchPlayer(ctx, x, y, seed, time, gesture) {
   const shape = (points, color) => poly(points.map(([a, b]) => p(a, b)), color);
   const beat = Math.floor(time / 230 + seed) % 6;
   const lean = gesture === 'rest' ? [1, 1, 2, 3, 3, 2][beat] : 0;
-  oval(x - 31, y + 114, 67, 10, '#4f5a42');
-  shape([[-15, 64], [14, 64], [23, 77], [28, 92], [12, 98], [2, 83], [-3, 83], [-15, 99], [-29, 91], [-25, 78]], C.steel);
-  shape([[-14, 64], [13, 64], [18, 77], [24, 88], [13, 92], [2, 77], [-6, 79], [-17, 94], [-26, 88], [-23, 78]], C.white);
-  shape([[-12, 68], [-5, 69], [-8, 79], [-21, 92], [-24, 88]], C.pale);
-  shape([[7, 70], [13, 70], [16, 79], [21, 86], [14, 86]], '#adb99c');
-  line(x - 21, y + 80, x - 18, y + 89, C.goldShade, 3);
-  line(x + 16, y + 79, x + 20, y + 88, C.goldShade, 3);
-  limb(p(-22, 92), p(-21, 112), 11, C.pale, C.white, C.steel);
-  limb(p(21, 92), p(22, 112), 11, C.pale, C.white, C.steel);
-  rect(x - 27, y + 108, 12, 7, C.greenDark);
-  rect(x + 17, y + 108, 11, 7, C.greenDark);
-  shape([[-26, 112], [-17, 112], [-12, 117], [-12, 121], [-32, 121], [-32, 118]], C.ink);
-  shape([[17, 112], [27, 112], [33, 117], [33, 121], [16, 121]], C.ink);
-  line(x - 29, y + 117, x - 15, y + 117, C.steel);
-  line(x + 19, y + 117, x + 29, y + 117, C.steel);
+  const leftKnee = gesture === 'rest' ? -31 : gesture === 'adjust' ? -18 : -25;
+  const rightKnee = gesture === 'towel' ? 18 : gesture === 'clap' ? 32 : 25;
+  const toeTap = gesture === 'clap' ? [0, 0, 2, 3, 1, 0][beat] : 0;
+  oval(x - 34, y + 115, 70, 8, '#4f5a42');
+  shape([[-15, 62], [14, 62], [rightKnee + 7, 72], [rightKnee + 7, 84], [rightKnee - 7, 87], [3, 76], [-4, 77], [leftKnee + 7, 88], [leftKnee - 7, 85], [leftKnee - 7, 72]], C.steel);
+  shape([[-14, 64], [13, 64], [rightKnee + 5, 74], [rightKnee + 4, 82], [rightKnee - 6, 83], [3, 72], [-4, 73], [leftKnee + 5, 84], [leftKnee - 5, 81], [leftKnee - 5, 74]], C.white);
+  shape([[-13, 68], [-5, 68], [leftKnee + 5, 80], [leftKnee - 5, 79]], C.pale);
+  line(...p(10, 69), ...p(rightKnee + 3, 78), C.goldShade, 3);
+  line(...p(-13, 70), ...p(leftKnee - 3, 78), C.goldShade, 3);
+  for (const [knee, ankle, tap] of [[leftKnee, leftKnee - 3, 0], [rightKnee, rightKnee + 2, toeTap]]) {
+    limb(p(knee, 83), p(ankle, 110 - tap), 11, C.pale, C.white, C.steel);
+    rect(x + ankle - 5, y + 105 - tap, 11, 7, C.greenDark);
+    const outward = knee < 0 ? -1 : 1;
+    shape([[ankle - 5, 110 - tap], [ankle + 5, 110 - tap], [ankle + 5 + outward * 5, 116 - tap], [ankle + 5 + outward * 5, 120 - tap], [ankle - 5 + outward * 5, 120 - tap], [ankle - 5, 116 - tap]], C.ink);
+    line(...p(ankle - 3 + outward * 3, 116 - tap), ...p(ankle + 4 + outward * 3, 116 - tap), C.steel);
+  }
   shape([[-23, 31], [-15, 25], [12, 24], [23, 29], [29, 40], [23, 51], [16, 66], [-16, 68], [-23, 51], [-29, 42]], C.ink);
   shape([[-23, 33], [-13, 27], [12, 26], [21, 31], [25, 40], [20, 49], [14, 64], [-13, 65], [-21, 49], [-25, 40]], C.green);
   shape([[-21, 32], [-11, 29], [-3, 31], [-4, 41], [-23, 42]], C.greenLight);
@@ -308,9 +316,9 @@ function benchPlayer(ctx, x, y, seed, time, gesture) {
   line(x - 7, y + 49, x + 6, y + 48, C.greenLight, 2);
   line(x - 5, y + 58, x + 9, y + 57, C.greenDark, 2);
   shape([[-7, 24], [-4, 20], [5, 20], [10, 26], [4, 33], [-3, 32]], skin[2]);
-  helmet(ctx, x + (gesture === 'rest' ? 5 : 0), y + lean, skin, seed % 2 ? -1 : 1);
+  helmet(ctx, x + (gesture === 'rest' ? 5 : 0), y + lean, skin, gesture === 'drink' ? 1 : seed % 2 ? -1 : 1);
   let leftElbow = p(-28, 60), rightElbow = p(27, 59), leftHand = p(-17, 80), rightHand = p(17, 80);
-  if (gesture === 'drink') { rightElbow = p(34, 44); rightHand = p(25, 13 + (beat > 3 ? 2 : 0)); }
+  if (gesture === 'drink') { rightElbow = p(34, 48); rightHand = p(27, 29 + (beat > 3 ? 1 : 0)); }
   if (gesture === 'rest') { leftElbow = p(-23, 71); leftHand = p(-7, 80); rightElbow = p(24, 69); rightHand = p(7, 80); }
   if (gesture === 'towel') { rightElbow = p(29, 42); rightHand = p(9 + [0, 3, 5, 3, 0, 0][beat], 18); leftHand = p(-10, 64); }
   if (gesture === 'clap') { leftElbow = p(-25, 65); rightElbow = p(26, 64); leftHand = p(-3 - (beat % 3) * 3, 53); rightHand = p(3 + (beat % 3) * 3, 53); }
@@ -324,9 +332,9 @@ function benchPlayer(ctx, x, y, seed, time, gesture) {
     rect(elbow[0] - 5, elbow[1] - 3, 10, 3, C.pale);
   }
   if (gesture === 'drink') {
-    poly([[rightHand[0] - 2, rightHand[1] - 12], [rightHand[0] + 4, rightHand[1] - 14], [rightHand[0] + 8, rightHand[1] + 1], [rightHand[0], rightHand[1] + 3]], '#426b61');
-    line(rightHand[0] + 1, rightHand[1] - 11, rightHand[0] + 4, rightHand[1] - 2, '#7cac8a', 2);
-    rect(rightHand[0] - 3, rightHand[1] - 14, 6, 3, C.orange);
+    poly([[rightHand[0] - 10, rightHand[1] - 12], [rightHand[0] - 5, rightHand[1] - 15], [rightHand[0] + 8, rightHand[1] - 1], [rightHand[0] + 1, rightHand[1] + 5]], '#426b61');
+    line(rightHand[0] - 5, rightHand[1] - 11, rightHand[0] + 5, rightHand[1], '#7cac8a', 2);
+    line(rightHand[0] - 12, rightHand[1] - 14, rightHand[0] - 7, rightHand[1] - 17, C.orange, 3);
   }
   if (gesture === 'towel') {
     shape([[-8, 7], [9, 6], [13, 13], [7, 26], [10, 41], [2, 42], [-2, 23], [-11, 20]], C.pale);
@@ -353,7 +361,7 @@ function bench(ctx, time) {
   rect(5, 145, 470, 2, C.white);
   rect(5, 152, 470, 5, '#605b43');
   const gestures = ['drink', 'rest', 'towel', 'clap', 'adjust'];
-  for (let i = 0; i < 5; i++) benchPlayer(ctx, 42 + i * 98, 61 + (i % 2 ? 3 : 0), i + 1, time, gestures[i]);
+  for (let i = 0; i < 5; i++) benchPlayer(ctx, 42 + i * 98, 74 + (i % 2 ? 2 : 0), i + 1, time, gestures[i]);
   poly([[0, 220], [480, 205], [480, 223], [0, 239]], C.white);
   line(0, 237, 480, 221, C.pale, 2);
   oval(174, 196, 50, 9, '#65745b');
@@ -554,7 +562,7 @@ function quarterbackHand(ctx, side, close) {
 
 function snap(ctx, time) {
   const { rect, poly, line } = pen(ctx);
-  const launch = ramp(time, 3000, 3770), close = ramp(time, 3540, 4060);
+  const launch = ramp(time, 3000, 3900), close = ramp(time, 3400, 3900);
   const surge = Math.floor(ramp(time, 3030, 3820) * 14);
   rect(0, 0, 480, 240, C.skyLight);
   rect(0, 0, 480, 23, C.sky);
@@ -575,10 +583,10 @@ function snap(ctx, time) {
   lineman(ctx, 101 - surge, 84, .78, surge * .7, 'brace');
   lineman(ctx, 377 + surge, 83, .8, surge * .7, 'wide');
   lineman(ctx, 240, 65 - Math.floor(surge * .25), 1.09, surge);
-  if (launch < .9) football(ctx, 240, 161 + launch * 45, 13 + launch * 58, 21 + launch * 20, 1 - Math.floor(launch * 4) / 4);
+  if (launch < 1) football(ctx, 240, 161 + launch * 61, 13 + launch * 63, 21 + launch * 22, 1 - launch);
   quarterbackHand(ctx, -1, close);
   quarterbackHand(ctx, 1, close);
-  if (launch >= .9) {
+  if (launch >= 1) {
     football(ctx, 240, 222, 76, 43, 0);
     poly([[192, 228], [203, 210], [212, 207], [214, 212], [208, 226], [217, 235], [207, 240], [198, 237]], C.skin);
     poly([[288, 228], [277, 210], [268, 207], [266, 212], [272, 226], [263, 235], [273, 240], [282, 237]], C.skin);
