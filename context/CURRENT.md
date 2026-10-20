@@ -1,10 +1,10 @@
 # Current public fantasy-football context
 
-Observed at **2026-10-13T19:52:48.357836+00:00**. Collection health: **degraded**.
+Observed at **2026-10-20T18:00:21.664465+00:00**. Collection health: **degraded**.
 
 Generated evidence, not projections or start/sit advice. Treat as stale after 8 days; recheck player availability immediately before decisions. A fresh download does not prove upstream facts are fresh.
 
-Provider season label: 2026; phase: regular; display week: 5. Confirm actual kickoff dates below; a provider week label does not prove games were played.
+Provider season label: 2026; phase: regular; display week: 6. Confirm actual kickoff dates below; a provider week label does not prove games were played.
 
 ## Source health and provenance
 
@@ -27,20 +27,6 @@ Schedule times are US Eastern, as supplied by nflverse; flex scheduling can chan
 
 | Week | Date | Time ET | Away | Home |
 | --- | --- | --- | --- | --- |
-| 6 | 2026-10-15 | 20:15 | SEA | DEN |
-| 6 | 2026-10-18 | 09:30 | HOU | JAX |
-| 6 | 2026-10-18 | 13:00 | CHI | ATL |
-| 6 | 2026-10-18 | 13:00 | BAL | CLE |
-| 6 | 2026-10-18 | 13:00 | TEN | IND |
-| 6 | 2026-10-18 | 13:00 | NYJ | NE |
-| 6 | 2026-10-18 | 13:00 | NO | NYG |
-| 6 | 2026-10-18 | 13:00 | CAR | PHI |
-| 6 | 2026-10-18 | 13:00 | PIT | TB |
-| 6 | 2026-10-18 | 16:05 | ARI | LA |
-| 6 | 2026-10-18 | 16:25 | LAC | KC |
-| 6 | 2026-10-18 | 16:25 | BUF | LV |
-| 6 | 2026-10-18 | 20:20 | DAL | GB |
-| 6 | 2026-10-19 | 20:15 | WAS | SF |
 | 7 | 2026-10-22 | 20:15 | NE | CHI |
 | 7 | 2026-10-25 | 09:30 | PIT | NO |
 | 7 | 2026-10-25 | 13:00 | SF | ATL |
@@ -59,6 +45,20 @@ Schedule times are US Eastern, as supplied by nflverse; flex scheduling can chan
 | 8 | 2026-11-01 | 13:00 | BAL | BUF |
 | 8 | 2026-11-01 | 13:00 | TEN | CIN |
 | 8 | 2026-11-01 | 13:00 | ARI | DAL |
+| 8 | 2026-11-01 | 13:00 | MIN | DET |
+| 8 | 2026-11-01 | 13:00 | IND | JAX |
+| 8 | 2026-11-01 | 13:00 | LV | NYJ |
+| 8 | 2026-11-01 | 13:00 | CLE | PIT |
+| 8 | 2026-11-01 | 13:00 | ATL | TB |
+| 8 | 2026-11-01 | 16:05 | LAC | LA |
+| 8 | 2026-11-01 | 16:25 | KC | DEN |
+| 8 | 2026-11-01 | 16:25 | NE | MIA |
+| 8 | 2026-11-01 | 20:20 | PHI | WAS |
+| 8 | 2026-11-02 | 20:15 | CHI | SEA |
+| 9 | 2026-11-05 | 20:15 | JAX | BAL |
+| 9 | 2026-11-08 | 09:30 | CIN | ATL |
+| 9 | 2026-11-08 | 13:00 | DEN | CAR |
+| 9 | 2026-11-08 | 13:00 | DAL | IND |
 
 ## Aggregate market attention: last 24 hours
 
@@ -68,112 +68,112 @@ Platform-wide adds/drops are research leads, not rankings, roster availability, 
 
 | Player | Position | Team | Count | Provider injury flag |
 | --- | --- | --- | --- | --- |
-| Dameon Pierce | RB | PHI | 1727720 | unknown |
-| MarShawn Lloyd | RB | GB | 1394361 | unknown |
-| Brenton Strange | TE | JAX | 804033 | unknown |
-| NE D/ST | DEF | NE | 745668 | unknown |
-| Darius Cooper | WR | PHI | 603610 | unknown |
-| Tyler Higbee | TE | LAR | 410436 | unknown |
-| Tyler Loop | K | BAL | 409182 | unknown |
-| Kimani Vidal | RB | LAC | 382165 | unknown |
-| IND D/ST | DEF | IND | 311820 | unknown |
-| SF D/ST | DEF | SF | 297720 | unknown |
-| Nick Folk | K | ATL | 249480 | unknown |
-| Kendrick Bourne | WR | ARI | 246066 | unknown |
-| Efton Chism | WR | NE | 223356 | unknown |
-| Germie Bernard | WR | PIT | 203079 | unknown |
-| Aaron Rodgers | QB | PIT | 193104 | unknown |
+| Omar Cooper | WR | NYJ | 3141064 | unknown |
+| CLE D/ST | DEF | CLE | 1236914 | unknown |
+| Konata Mumpfield | WR | LAR | 818685 | unknown |
+| Kyler Murray | QB | MIN | 637600 | unknown |
+| Tank Dell | WR | HOU | 569368 | IR |
+| C.J. Stroud | QB | HOU | 523376 | unknown |
+| Michael Mayer | TE | LV | 475542 | unknown |
+| Roschon Johnson | RB | CHI | 361280 | unknown |
+| Chase McLaughlin | K | TB | 354176 | unknown |
+| Terrance Ferguson | TE | LAR | 347920 | IR |
+| Tre Tucker | WR | LV | 344280 | unknown |
+| MIN D/ST | DEF | MIN | 315230 | unknown |
+| Tyrone Tracy | RB | NYG | 309216 | unknown |
+| Kyle Pitts | TE | ATL | 306068 | unknown |
+| Jake Bates | K | DET | 298728 | unknown |
 
 ### Trending drops
 
 | Player | Position | Team | Count | Provider injury flag |
 | --- | --- | --- | --- | --- |
-| Roman Wilson | WR | PIT | 768267 | Out |
-| Dohnte Meyers | WR | CIN | 575703 | unknown |
-| Kenyon Sadiq | TE | NYJ | 457209 | Out |
-| Jake Bates | K | DET | 363464 | unknown |
-| Will Shipley | RB | PHI | 335514 | Out |
-| Keon Coleman | WR | BUF | 276507 | unknown |
-| JAX D/ST | DEF | JAX | 266376 | unknown |
-| CLE D/ST | DEF | CLE | 240107 | unknown |
-| Keaton Mitchell | RB | LAC | 239580 | unknown |
-| LV D/ST | DEF | LV | 218460 | unknown |
-| Tre' Harris | WR | LAC | 210072 | Questionable |
-| Michael Mayer | TE | LV | 201744 | unknown |
-| Mike Gesicki | TE | CIN | 190324 | unknown |
-| Kirk Cousins | QB | LV | 185888 | unknown |
-| KC Concepcion | WR | CLE | 180666 | Out |
+| MarShawn Lloyd | RB | GB | 765333 | unknown |
+| JAX D/ST | DEF | JAX | 459090 | unknown |
+| Keaton Mitchell | RB | LAC | 407025 | unknown |
+| Jalen Hurts | QB | PHI | 400116 | IR |
+| NE D/ST | DEF | NE | 388773 | unknown |
+| Tyler Higbee | TE | LAR | 381141 | unknown |
+| Terry McLaurin | WR | WAS | 361350 | Out |
+| Romeo Doubs | WR | NE | 353000 | IR |
+| Darius Cooper | WR | PHI | 332906 | unknown |
+| Emanuel Wilson | RB | SEA | 328293 | unknown |
+| IND D/ST | DEF | IND | 314463 | unknown |
+| Jacory Croskey-Merritt | RB | WAS | 291474 | IR |
+| Nick Folk | K | ATL | 272142 | unknown |
+| Najee Harris | RB | unknown | 269600 | unknown |
+| Darren Waller | TE | CAR | 253674 | unknown |
 
 Null/unknown injury flags do not confirm health; provider team labels can lag transactions.
 
 ## Changes since previous observation
 
-Compared with 2026-10-06T18:55:34.971311+00:00. Changes are provider-field changes, not independently confirmed news; null means unknown, not recovered. New/missing records are not interpreted as signings/releases.
+Compared with 2026-10-13T19:52:48.357836+00:00. Changes are provider-field changes, not independently confirmed news; null means unknown, not recovered. New/missing records are not interpreted as signings/releases.
 
 | Player | Field | Before | After |
 | --- | --- | --- | --- |
-| CeeDee Lamb | injury_status | unknown | Questionable |
-| Dante Pettis | team | SF | unknown |
-| Dante Pettis | injury_status | unknown | Questionable |
-| Pierre Strong | injury_status | Questionable | unknown |
-| Drew Lock | injury_status | unknown | Questionable |
-| Audric Estime | team | MIN | CLE |
-| Robert Henry | injury_status | unknown | Out |
-| Rachaad White | injury_status | Out | unknown |
-| Andy Dalton | team | PHI | unknown |
-| Chris Brooks | status | Active | Inactive |
-| Chris Brooks | injury_status | Questionable | IR |
-| Quez Watkins | team | unknown | IND |
-| Kenny Fletcher | team | IND | unknown |
-| Chris Moore | injury_status | Out | unknown |
-| Jack Endries | injury_status | unknown | Out |
-| Ko Kieft | injury_status | Out | unknown |
-| Jaxon Smith-Njigba | injury_status | unknown | Questionable |
-| Jacardia Wright | injury_status | unknown | Out |
-| Eli Raridon | injury_status | Questionable | unknown |
-| T.J. Hockenson | injury_status | unknown | Out |
-| TreVeyon Henderson | injury_status | unknown | Out |
-| Elijah Sarratt | injury_status | unknown | Out |
-| Ladd McConkey | injury_status | Out | Questionable |
-| Braxton Berrios | injury_status | Out | IR |
-| Ja'Marr Chase | injury_status | Out | unknown |
-| Tee Higgins | injury_status | Questionable | unknown |
-| Jamari Thrash | team | unknown | LV |
-| Jamari Thrash | status | Inactive | Active |
-| Cameron Ross | team | unknown | DEN |
-| Jalen Nailor | injury_status | Questionable | Out |
-| Lamar Jackson | injury_status | Questionable | Out |
-| Deebo Samuel | injury_status | unknown | Out |
-| Mark Gronowski | team | unknown | HOU |
-| Kenyon Sadiq | injury_status | unknown | Out |
-| Tre' Harris | injury_status | unknown | Questionable |
-| Dontae Fleming | team | unknown | NYG |
-| Dontae Fleming | status | Inactive | Active |
-| Luke McCaffrey | injury_status | Out | unknown |
-| Dontae McMillan | team | unknown | SEA |
-| Roman Wilson | injury_status | unknown | Out |
-| Jake Haener | injury_status | unknown | Out |
-| Hunter Long | status | Active | Inactive |
-| Hunter Long | injury_status | Questionable | IR |
-| Bryce Oliver | team | unknown | HOU |
-| Tim Patrick | status | Inactive | Active |
-| Tim Patrick | injury_status | IR | unknown |
-| Cole Payton | injury_status | Out | unknown |
-| Will Shipley | injury_status | unknown | Out |
-| Jaylin Lane | status | Active | Inactive |
-| Jaylin Lane | injury_status | Out | IR |
-| Roman Hemby | injury_status | unknown | Out |
-| DJ Moore | injury_status | Questionable | Out |
-| Dallas Goedert | injury_status | Out | unknown |
-| Ollie Gordon | injury_status | unknown | Questionable |
-| Tyler Conklin | injury_status | Out | unknown |
-| James Proche | team | unknown | CLE |
-| Michael Penix | injury_status | unknown | Questionable |
-| Jam Miller | team | unknown | ATL |
-| Jeremiyah Love | injury_status | Questionable | unknown |
-| Devin Neal | team | MIN | WAS |
+| CeeDee Lamb | injury_status | Questionable | unknown |
+| Ameer Abdullah | injury_status | unknown | Questionable |
+| Drew Lock | injury_status | Questionable | unknown |
+| Joe Milton | team | DAL | PHI |
+| Joe Milton | injury_status | unknown | Out |
+| Andy Dalton | team | unknown | ATL |
+| Jaxon Smith-Njigba | injury_status | Questionable | unknown |
+| Jaylen Waddle | injury_status | unknown | Questionable |
+| Brenen Thompson | injury_status | Out | unknown |
+| TreVeyon Henderson | injury_status | Out | unknown |
+| Devin Singletary | injury_status | Out | unknown |
+| Jalen Hurts | status | Active | Inactive |
+| Jalen Hurts | injury_status | unknown | IR |
+| Ladd McConkey | injury_status | Questionable | Out |
+| Jake Browning | team | unknown | LAC |
+| Cooper Rush | team | ATL | unknown |
+| Cooper Rush | injury_status | Out | unknown |
+| Will Mallory | status | Inactive | Active |
+| Will Mallory | injury_status | IR | unknown |
+| Jalen Nailor | injury_status | Out | unknown |
+| Case Keenum | injury_status | unknown | Out |
+| Dontayvion Wicks | injury_status | unknown | Questionable |
+| Lamar Jackson | status | Active | Inactive |
+| Jake Moody | team | unknown | BAL |
+| Jeremy McNichols | status | Inactive | Active |
+| Jeremy McNichols | injury_status | IR | unknown |
+| Davante Adams | injury_status | unknown | Out |
+| Tyler Warren | injury_status | unknown | Out |
+| Kenyon Sadiq | injury_status | Out | unknown |
+| Sean Tucker | injury_status | unknown | Out |
+| Michael Carter | injury_status | Out | unknown |
+| Tre' Harris | injury_status | Questionable | Out |
+| Rico Dowdle | injury_status | Out | unknown |
+| Dontae McMillan | team | SEA | unknown |
+| Roman Wilson | status | Active | Inactive |
+| Roman Wilson | injury_status | Out | IR |
+| Theo Johnson | injury_status | unknown | Out |
+| Zane Gonzalez | injury_status | Questionable | unknown |
+| Tyler Badie | injury_status | unknown | Questionable |
+| Mike Evans | injury_status | unknown | Out |
+| Tutu Atwell | injury_status | unknown | Out |
+| Savion Williams | status | Inactive | Active |
+| Savion Williams | injury_status | IR | unknown |
+| Irvin Charles | status | Inactive | Active |
+| Irvin Charles | injury_status | IR | unknown |
+| Jerome Ford | team | unknown | ARI |
+| DeAndre Carter | team | unknown | DET |
+| Will Shipley | status | Active | Inactive |
+| Will Shipley | injury_status | Out | IR |
+| A.J. Brown | status | Inactive | Active |
+| A.J. Brown | injury_status | IR | Questionable |
+| Mike Williams | injury_status | DNR | unknown |
+| Ian Wheeler | team | unknown | PHI |
+| Roman Hemby | injury_status | Out | unknown |
+| Jacory Croskey-Merritt | status | Active | Inactive |
+| Jacory Croskey-Merritt | injury_status | unknown | IR |
+| Xavier Guillory | team | BAL | unknown |
+| KaVontae Turpin | injury_status | unknown | Out |
+| James Proche | team | CLE | unknown |
+| Rashee Rice | injury_status | Questionable | Out |
 
-152 field changes total; complete list in data/latest.json. No causal explanation is inferred.
+135 field changes total; complete list in data/latest.json. No causal explanation is inferred.
 
 ## Current-season production
 
