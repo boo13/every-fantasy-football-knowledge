@@ -1,10 +1,10 @@
 # Current public fantasy-football context
 
-Observed at **2026-11-17T21:47:54.536641+00:00**. Collection health: **degraded**.
+Observed at **2026-11-24T23:03:09.600565+00:00**. Collection health: **degraded**.
 
 Generated evidence, not projections or start/sit advice. Treat as stale after 8 days; recheck player availability immediately before decisions. A fresh download does not prove upstream facts are fresh.
 
-Provider season label: 2026; phase: regular; display week: 10. Confirm actual kickoff dates below; a provider week label does not prove games were played.
+Provider season label: 2026; phase: regular; display week: 11. Confirm actual kickoff dates below; a provider week label does not prove games were played.
 
 ## Source health and provenance
 
@@ -27,19 +27,6 @@ Schedule times are US Eastern, as supplied by nflverse; flex scheduling can chan
 
 | Week | Date | Time ET | Away | Home |
 | --- | --- | --- | --- | --- |
-| 11 | 2026-11-19 | 20:15 | IND | HOU |
-| 11 | 2026-11-22 | 13:00 | MIA | BUF |
-| 11 | 2026-11-22 | 13:00 | BAL | CAR |
-| 11 | 2026-11-22 | 13:00 | NO | CHI |
-| 11 | 2026-11-22 | 13:00 | TEN | DAL |
-| 11 | 2026-11-22 | 13:00 | TB | DET |
-| 11 | 2026-11-22 | 13:00 | ARI | KC |
-| 11 | 2026-11-22 | 13:00 | JAX | NYG |
-| 11 | 2026-11-22 | 16:05 | NYJ | LAC |
-| 11 | 2026-11-22 | 16:25 | LV | DEN |
-| 11 | 2026-11-22 | 16:25 | PIT | PHI |
-| 11 | 2026-11-22 | 20:20 | MIN | SF |
-| 11 | 2026-11-23 | 20:15 | CIN | WAS |
 | 12 | 2026-11-25 | 20:00 | GB | LA |
 | 12 | 2026-11-26 | 13:00 | CHI | DET |
 | 12 | 2026-11-26 | 16:30 | PHI | DAL |
@@ -59,6 +46,19 @@ Schedule times are US Eastern, as supplied by nflverse; flex scheduling can chan
 | 13 | 2026-12-03 | 20:15 | KC | LA |
 | 13 | 2026-12-06 | 13:00 | DET | ATL |
 | 13 | 2026-12-06 | 13:00 | JAX | CHI |
+| 13 | 2026-12-06 | 13:00 | CIN | CLE |
+| 13 | 2026-12-06 | 13:00 | GB | NO |
+| 13 | 2026-12-06 | 13:00 | SF | NYG |
+| 13 | 2026-12-06 | 13:00 | LAC | TB |
+| 13 | 2026-12-06 | 13:00 | WAS | TEN |
+| 13 | 2026-12-06 | 16:05 | PHI | ARI |
+| 13 | 2026-12-06 | 16:05 | MIA | DEN |
+| 13 | 2026-12-06 | 16:25 | CAR | MIN |
+| 13 | 2026-12-06 | 16:25 | BUF | NE |
+| 13 | 2026-12-06 | 20:20 | HOU | PIT |
+| 13 | 2026-12-07 | 20:15 | DAL | SEA |
+| 14 | 2026-12-10 | 20:15 | MIN | NE |
+| 14 | 2026-12-13 | 13:00 | TB | BAL |
 
 ## Aggregate market attention: last 24 hours
 
@@ -68,112 +68,112 @@ Platform-wide adds/drops are research leads, not rankings, roster availability, 
 
 | Player | Position | Team | Count | Provider injury flag |
 | --- | --- | --- | --- | --- |
-| Michael Mayer | TE | LV | 1249263 | unknown |
-| Xavier Hutchinson | WR | HOU | 1034173 | Questionable |
-| Ryan Flournoy | WR | DAL | 643760 | unknown |
-| Seth McGowan | RB | IND | 623256 | unknown |
-| Mark Andrews | TE | BAL | 603729 | unknown |
-| Pat Bryant | WR | DEN | 588256 | unknown |
-| Jordyn Tyson | WR | NO | 557112 | unknown |
-| DET D/ST | DEF | DET | 516411 | unknown |
-| Bo Nix | QB | DEN | 278412 | unknown |
-| Elic Ayomanor | WR | TEN | 277988 | unknown |
-| Chase McLaughlin | K | TB | 272152 | unknown |
-| Cairo Santos | K | CHI | 238238 | unknown |
-| Jacory Croskey-Merritt | RB | WAS | 236025 | IR |
-| Kaelon Black | RB | SF | 210868 | unknown |
-| Caleb Douglas | WR | MIA | 188472 | unknown |
+| Chris Rodriguez Jr. | RB | JAX | 1063440 | unknown |
+| WAS D/ST | DEF | WAS | 715561 | unknown |
+| Justice Hill | RB | BAL | 419229 | unknown |
+| NYG D/ST | DEF | NYG | 412012 | unknown |
+| Jacory Croskey-Merritt | RB | WAS | 392004 | unknown |
+| Chimere Dike | WR | TEN | 287253 | unknown |
+| CLE D/ST | DEF | CLE | 251552 | unknown |
+| Tyler Higbee | TE | LAR | 233073 | unknown |
+| Konata Mumpfield | WR | LAR | 216423 | unknown |
+| Fernando Mendoza | QB | LV | 213296 | unknown |
+| Ted Hurst III | WR | TB | 205212 | unknown |
+| Jack Bech | WR | LV | 191702 | unknown |
+| Deshaun Watson | QB | CLE | 188400 | unknown |
+| Tai Felton | WR | MIN | 161538 | unknown |
+| Samaje Perine | RB | CIN | 155276 | unknown |
 
 ### Trending drops
 
 | Player | Position | Team | Count | Provider injury flag |
 | --- | --- | --- | --- | --- |
-| Corey Kiner | RB | NE | 589974 | unknown |
-| Devin Singletary | RB | NYG | 473715 | unknown |
-| Darren Waller | TE | CAR | 279639 | unknown |
-| Tutu Atwell | WR | LAR | 267666 | unknown |
-| Jason Myers | K | SEA | 254200 | unknown |
-| Jordan Addison | WR | MIN | 241893 | Out |
-| Konata Mumpfield | WR | LAR | 238905 | unknown |
-| BAL D/ST | DEF | BAL | 238542 | unknown |
-| Tyler Higbee | TE | LAR | 228555 | unknown |
-| Omar Cooper Jr. | WR | NYJ | 227544 | Out |
-| Demarcus Robinson | WR | SF | 209976 | unknown |
-| Chris Rodriguez Jr. | RB | JAX | 204003 | unknown |
-| Audric Estime | RB | NO | 201501 | unknown |
-| Devaughn Vele | WR | NO | 196525 | unknown |
-| NE D/ST | DEF | NE | 190708 | unknown |
+| Michael Mayer | TE | LV | 535230 | unknown |
+| DET D/ST | DEF | DET | 464031 | unknown |
+| Seth McGowan | RB | IND | 396144 | Out |
+| Mark Andrews | TE | BAL | 291060 | unknown |
+| Terrance Ferguson | TE | LAR | 200072 | IR |
+| Xavier Hutchinson | WR | HOU | 182392 | unknown |
+| Pat Bryant | WR | DEN | 180696 | unknown |
+| Elic Ayomanor | WR | TEN | 175392 | unknown |
+| Adonai Mitchell | WR | NYJ | 161480 | unknown |
+| Courtland Sutton | WR | DEN | 150705 | unknown |
+| Ryan Flournoy | WR | DAL | 144456 | unknown |
+| Tank Dell | WR | HOU | 140864 | unknown |
+| Puka Nacua | WR | LAR | 123172 | IR |
+| Bo Nix | QB | DEN | 103494 | unknown |
+| Rachaad White | RB | WAS | 98820 | unknown |
 
 Null/unknown injury flags do not confirm health; provider team labels can lag transactions.
 
 ## Changes since previous observation
 
-Compared with 2026-11-10T20:29:17.987994+00:00. Changes are provider-field changes, not independently confirmed news; null means unknown, not recovered. New/missing records are not interpreted as signings/releases.
+Compared with 2026-11-17T21:47:54.536641+00:00. Changes are provider-field changes, not independently confirmed news; null means unknown, not recovered. New/missing records are not interpreted as signings/releases.
 
 | Player | Field | Before | After |
 | --- | --- | --- | --- |
-| Oronde Gadsden | injury_status | unknown | Questionable |
-| Mo Alie-Cox | status | Active | Inactive |
-| Mo Alie-Cox | injury_status | Questionable | IR |
-| Pierre Strong Jr. | injury_status | unknown | Out |
-| Drew Lock | injury_status | Questionable | unknown |
-| Charlie Jones | team | NYG | unknown |
-| Charlie Jones | injury_status | Questionable | unknown |
-| Jason Brownlee | team | unknown | TEN |
-| Chris Brooks | status | Inactive | Active |
-| Chris Brooks | injury_status | IR | unknown |
-| Kenny Fletcher Jr. | team | unknown | GB |
-| Gary Jennings | team | LAC | unknown |
-| Brandin Cooks | injury_status | unknown | Out |
-| T.J. Hockenson | injury_status | unknown | Out |
-| TreVeyon Henderson | status | Active | Inactive |
-| TreVeyon Henderson | injury_status | Out | IR |
-| Geno Smith | injury_status | unknown | Out |
-| Ladd McConkey | injury_status | Questionable | Out |
-| Michael Wilson | status | Active | Inactive |
-| Michael Wilson | injury_status | Out | IR |
-| Cooper Rush | team | unknown | TB |
-| John FitzPatrick | team | CLE | KC |
-| Patrick Mahomes | injury_status | Questionable | unknown |
-| Jalen Tolbert | injury_status | Out | unknown |
-| Justin Herbert | injury_status | Questionable | unknown |
-| Jamari Thrash | team | unknown | TEN |
-| Pharaoh Brown | injury_status | Out | unknown |
-| Jacob Saylors | injury_status | Out | unknown |
-| Joey Aguilar | injury_status | unknown | Out |
-| Deebo Samuel Sr. | injury_status | Out | unknown |
-| Baker Mayfield | injury_status | unknown | Questionable |
-| Michael Carter | team | TEN | unknown |
-| Jermar Jefferson | team | ARI | unknown |
-| George Pickens | injury_status | Out | unknown |
-| Treylon Burks | injury_status | Out | unknown |
-| Garrett Wilson | injury_status | Out | unknown |
-| Chris Bell | injury_status | unknown | Out |
-| Zane Gonzalez | team | MIA | unknown |
-| Treyton Welch | team | unknown | NO |
-| Woody Marks | injury_status | unknown | Out |
-| Tyreek Hill | injury_status | Questionable | unknown |
-| Hunter Long | status | Inactive | Active |
-| Hunter Long | injury_status | IR | unknown |
-| Puka Nacua | injury_status | Questionable | IR |
-| George Holani | injury_status | unknown | Out |
-| Antonio Gibson | injury_status | Questionable | unknown |
-| Barika Kpeenu | team | TB | unknown |
-| J.J. McCarthy | injury_status | Questionable | unknown |
-| Rashid Shaheed | injury_status | Out | unknown |
-| Olamide Zaccheaus | injury_status | Questionable | unknown |
-| Jonathan Mingo | injury_status | Questionable | Out |
-| KaVontae Turpin | injury_status | Out | unknown |
-| Max Brosmer | injury_status | unknown | Out |
-| Shane Buechele | injury_status | unknown | Out |
-| Tyler Goodson | status | Active | Inactive |
-| Tyler Goodson | injury_status | Out | IR |
-| Drake London | injury_status | unknown | Questionable |
-| Marquise Brown | team | PHI | unknown |
-| Xavier Worthy | injury_status | Out | unknown |
-| Aidan O'Connell | injury_status | Out | unknown |
+| Kayshon Boutte | injury_status | unknown | Questionable |
+| Adam Randall | status | Inactive | Active |
+| Adam Randall | injury_status | IR | Out |
+| Oronde Gadsden | injury_status | Questionable | unknown |
+| Pierre Strong Jr. | injury_status | Out | unknown |
+| Audric Estime | injury_status | unknown | Out |
+| Noah Gray | injury_status | unknown | Questionable |
+| Robert Henry Jr. | injury_status | unknown | Out |
+| Jauan Jennings | injury_status | Out | unknown |
+| Charlie Jones | team | unknown | NYG |
+| Jaylen Waddle | injury_status | Out | unknown |
+| Brandin Cooks | team | SF | unknown |
+| Brandin Cooks | injury_status | Out | unknown |
+| Daniel Jones | team | IND | unknown |
+| T.J. Hockenson | injury_status | Out | unknown |
+| Miller Moss | team | CHI | unknown |
+| Geno Smith | injury_status | Out | unknown |
+| Ladd McConkey | injury_status | Out | unknown |
+| Ben VanSumeren | status | Active | Inactive |
+| Ben VanSumeren | injury_status | Out | IR |
+| Demarcus Robinson | injury_status | unknown | Out |
+| Isaiah Williams | injury_status | unknown | Out |
+| Brady Boyd | team | unknown | MIA |
+| Justin Herbert | injury_status | unknown | Questionable |
+| Sam LaPorta | injury_status | unknown | Questionable |
+| Britain Covey | injury_status | Out | unknown |
+| Luther Burden III | injury_status | Questionable | unknown |
+| Dontayvion Wicks | status | Active | Inactive |
+| Dontayvion Wicks | injury_status | Out | IR |
+| Joey Aguilar | injury_status | Out | unknown |
+| Baker Mayfield | injury_status | Questionable | unknown |
+| Michael Carter | team | unknown | TEN |
+| Carson Beck | injury_status | unknown | Out |
+| Ronnie Bell | team | unknown | ARI |
+| Gregory Desrosiers Jr. | injury_status | unknown | Out |
+| Roman Wilson | status | Inactive | Active |
+| Roman Wilson | injury_status | IR | unknown |
+| Keaton Mitchell | injury_status | unknown | Questionable |
+| Chris Bell | injury_status | Out | Questionable |
+| Tyreek Hill | injury_status | unknown | Questionable |
+| Easton Stick | injury_status | unknown | Out |
+| Mike Evans | injury_status | Out | unknown |
+| Seth McGowan | injury_status | unknown | Out |
+| Tim Patrick | injury_status | Out | unknown |
+| Cole Payton | injury_status | unknown | Out |
+| Derrick Henry | injury_status | unknown | Questionable |
+| Will Shipley | status | Inactive | Active |
+| Will Shipley | injury_status | IR | Questionable |
+| Saquon Barkley | injury_status | unknown | Questionable |
+| Ian Wheeler | team | unknown | LAC |
+| George Holani | injury_status | Out | IR |
+| Sean McKeon | team | unknown | IND |
+| Sean McKeon | status | Inactive | Active |
+| Sean McKeon | injury_status | Questionable | unknown |
+| Kedon Slovis | team | BAL | unknown |
+| Kedon Slovis | injury_status | Out | unknown |
+| Jacory Croskey-Merritt | status | Inactive | Active |
+| Jacory Croskey-Merritt | injury_status | IR | unknown |
+| Isaiah Hodgins | team | PIT | unknown |
+| CJ Donaldson | injury_status | Out | unknown |
 
-149 field changes total; complete list in data/latest.json. No causal explanation is inferred.
+120 field changes total; complete list in data/latest.json. No causal explanation is inferred.
 
 ## Current-season production
 
